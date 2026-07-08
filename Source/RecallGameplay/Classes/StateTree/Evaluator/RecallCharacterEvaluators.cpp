@@ -9,7 +9,7 @@
 
 #include "StateTreeExecutionContext.h"
 #include "StateTreeLinker.h"
-#include "Physics/Character/RecallPhysicsCharacterVirtualObject.h"
+#include "Physics/Character/JPRPhysicsCharacterVirtualObject.h"
 #include "Simulation/Physics/RecallPhysicsBodyFragment.h"
 #include "System/Physics/RecallPhysicsSubsystem.h"
 
@@ -34,8 +34,8 @@ void FRecallCharacterEvaluator::Tick(FStateTreeExecutionContext& Context, const 
 	const URecallPhysicsSubsystem& PhysicsSystem = Context.GetExternalData(PhysicsSystemHandle);
 	const FRecallPhysicsBodyFragment& BodyFragment = Context.GetExternalData(BodyFragmentHandle);
 
-	const TWeakPtr<const FRecallPhysicsCharacterVirtualBody> CharacterVirtualBody = PhysicsSystem
-		.GetBody(BodyFragment.BodyHandle).GetBody<FRecallPhysicsCharacterVirtualBody>();
+	const TWeakPtr<const FJPRPhysicsCharacterVirtualBody> CharacterVirtualBody = PhysicsSystem
+		.GetBody(BodyFragment.BodyHandle).GetBody<FJPRPhysicsCharacterVirtualBody>();
 	if (CharacterVirtualBody.IsValid())
 	{
 		InstanceData.bStanding = CharacterVirtualBody.Pin()->IsStanding();

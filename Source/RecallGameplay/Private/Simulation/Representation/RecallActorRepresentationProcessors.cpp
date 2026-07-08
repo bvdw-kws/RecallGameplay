@@ -12,7 +12,6 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "MassExecutionContext.h"
 #include "Physics/RecallPhysicsObjects.h"
-#include "Physics/Character/RecallPhysicsCharacterObject.h"
 #include "Simulation/Controller/RecallControllerFragments.h"
 #include "Simulation/Movement/RecallMovementFragments.h"
 #include "Simulation/Physics/RecallPhysicsBodyFragment.h"
@@ -306,7 +305,7 @@ void URecallActorAnimationRepresentationProcessor::ConfigureQueries(const TShare
 	EntityQuery.AddRequirement<FRecallMovementFragment>(EMassFragmentAccess::ReadOnly, EMassFragmentPresence::Optional);
 	EntityQuery.AddRequirement<FRecallPhysicsBodyFragment>(EMassFragmentAccess::ReadOnly, EMassFragmentPresence::Optional);
 	EntityQuery.AddRequirement<FRecallControllerFragment>(EMassFragmentAccess::ReadOnly, EMassFragmentPresence::Optional);
-	EntityQuery.AddRequirement<FRecallPhysicsCharacterFragment>(EMassFragmentAccess::ReadOnly, EMassFragmentPresence::Optional);
+	EntityQuery.AddRequirement<FJPRPhysicsCharacterFragment>(EMassFragmentAccess::ReadOnly, EMassFragmentPresence::Optional);
 	EntityQuery.AddTagRequirements<EMassFragmentPresence::None>(InvalidTags);
 	EntityQuery.AddTagRequirements<EMassFragmentPresence::All>(RequiredTags);
 	EntityQuery.AddSubsystemRequirement<URecallActorSubsystem>(EMassFragmentAccess::ReadOnly);
@@ -331,7 +330,7 @@ void URecallActorAnimationRepresentationProcessor::Execute(FMassEntityManager& E
 		const TConstArrayView<FRecallMovementFragment> MovementList = Context.GetFragmentView<FRecallMovementFragment>();
 		const TConstArrayView<FRecallPhysicsBodyFragment> BodyList = Context.GetFragmentView<FRecallPhysicsBodyFragment>();
 		const TConstArrayView<FRecallControllerFragment> ControllerList = Context.GetFragmentView<FRecallControllerFragment>();
-		const TConstArrayView<FRecallPhysicsCharacterFragment> CharacterList = Context.GetFragmentView<FRecallPhysicsCharacterFragment>();
+		const TConstArrayView<FJPRPhysicsCharacterFragment> CharacterList = Context.GetFragmentView<FJPRPhysicsCharacterFragment>();
 
 		for (int32 EntityIndex = 0; EntityIndex < Context.GetNumEntities(); EntityIndex++)
 		{
@@ -367,7 +366,7 @@ void URecallActorAnimationRepresentationProcessor::Execute(FMassEntityManager& E
 
 					if (CharacterList.IsValidIndex(EntityIndex))
 					{
-						const FRecallPhysicsCharacterFragment& CharacterFragment = CharacterList[EntityIndex];
+						const FJPRPhysicsCharacterFragment& CharacterFragment = CharacterList[EntityIndex];
 						AnimInstance->bGrounded = CharacterFragment.bIsSupported;
 					}
 					

@@ -17,6 +17,7 @@ public class RecallTrack : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] {
 			"Engine",
 			"JoltPhysicsRuntimeCore",
+			"JoltPhysicsRuntime",
 		});
 		PrivateDependencyModuleNames.AddRange(new string[] {
 			"Core",

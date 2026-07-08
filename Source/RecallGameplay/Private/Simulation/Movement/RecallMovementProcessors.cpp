@@ -10,7 +10,6 @@
 #include "Async/ParallelFor.h"
 #include "Desync/RecallDesyncLog.h"
 #include "MassExecutionContext.h"
-#include "Physics/Common/RecallPhysicsCommonObjects.h"
 #include "Simulation/Attribute/RecallAttributeFragments.h"
 #include "Simulation/Controller/RecallControllerFragments.h"
 #include "Simulation/GameplayTag/RecallGameplayTagFragments.h"
@@ -51,7 +50,7 @@ void URecallMovementProcessor::ConfigureQueries(const TSharedRef<FMassEntityMana
 	EntityQuery.AddRequirement<FRecallGameplayTagFragment>(EMassFragmentAccess::ReadWrite, EMassFragmentPresence::Optional);
 	EntityQuery.AddRequirement<FRecallAttributeFragment>(EMassFragmentAccess::ReadOnly, EMassFragmentPresence::Optional);	
 	EntityQuery.AddRequirement<FRecallControllerFragment>(EMassFragmentAccess::ReadOnly, EMassFragmentPresence::Optional);
-	EntityQuery.AddRequirement<FRecallPhysicsCharacterFragment>(EMassFragmentAccess::ReadOnly, EMassFragmentPresence::Optional);
+	EntityQuery.AddRequirement<FJPRPhysicsCharacterFragment>(EMassFragmentAccess::ReadOnly, EMassFragmentPresence::Optional);
 	EntityQuery.AddTagRequirements<EMassFragmentPresence::None>(InvalidTags);
 	EntityQuery.AddSubsystemRequirement<URecallPhysicsSubsystem>(EMassFragmentAccess::ReadWrite);
 	EntityQuery.AddConstSharedRequirement<FRecallMovementSharedFragment>();
@@ -73,13 +72,13 @@ void URecallMovementProcessor::Execute(FMassEntityManager& EntityManager, FMassE
 		const TArrayView<FRecallGameplayTagFragment> GameplayTagsList = Context.GetMutableFragmentView<FRecallGameplayTagFragment>();
 		const TConstArrayView<FRecallAttributeFragment> AttributeList = Context.GetFragmentView<FRecallAttributeFragment>();
 		const TConstArrayView<FRecallControllerFragment> ControllerList = Context.GetFragmentView<FRecallControllerFragment>();
-		const TConstArrayView<FRecallPhysicsCharacterFragment> CharacterList = Context.GetFragmentView<FRecallPhysicsCharacterFragment>();
+		const TConstArrayView<FJPRPhysicsCharacterFragment> CharacterList = Context.GetFragmentView<FJPRPhysicsCharacterFragment>();
 
 		ParallelFor(Context.GetNumEntities(), [&](int32 EntityIndex)
 		{
 			const FRecallPhysicsBodyFragment& BodyFragment = BodyList[EntityIndex];
 			const FRecallPhysicsBodyView PhysicsBody = PhysicsSystem.GetMutableBody(BodyFragment.BodyHandle);
-			if (!ensure(PhysicsBody.IsValid()) || !PhysicsBody.Pin()->IsEnabled())
+			if (!ensure(PhysicsBody.IsValid()) || !PhysicsBody.IsEnabled())
 			{
 				return;
 			}
@@ -89,7 +88,7 @@ void URecallMovementProcessor::Execute(FMassEntityManager& EntityManager, FMassE
 			FRecallGameplayTagFragment* const GameplayTagsFragmentPtr = GameplayTagsList.IsValidIndex(EntityIndex) ? &GameplayTagsList[EntityIndex] : nullptr;
 			const FRecallAttributeFragment* const AttributeFragmentPtr = AttributeList.IsValidIndex(EntityIndex) ? &AttributeList[EntityIndex] : nullptr;
 			const FRecallControllerFragment* const ControllerFragmentPtr = ControllerList.IsValidIndex(EntityIndex) ? &ControllerList[EntityIndex] : nullptr;
-			const FRecallPhysicsCharacterFragment* const CharacterFragmentPtr = CharacterList.IsValidIndex(EntityIndex) ? &CharacterList[EntityIndex] : nullptr;
+			const FJPRPhysicsCharacterFragment* const CharacterFragmentPtr = CharacterList.IsValidIndex(EntityIndex) ? &CharacterList[EntityIndex] : nullptr;
 
 			const FRecallMovementContext MovementContext = { Context,	
 				MovementFragment, MovementConstSharedFragment, PhysicsBody,

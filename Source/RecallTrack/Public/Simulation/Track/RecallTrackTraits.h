@@ -8,7 +8,7 @@
 
 #include "MassEntityTraitBase.h"
 #include "Physics/RecallPhysicsTypes.h"
-#include "Physics/Common/RecallPhysicsCommonShapeTypes.h"
+#include "Physics/Common/JPRPhysicsCommonShapeTypes.h"
 #include "Simulation/Physics/RecallPhysicsColliderTraits.h"
 
 #include "RecallTrackTraits.generated.h"
@@ -27,7 +27,7 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere, Category=Collision, meta=(ShowOnlyInnerProperties))
-	FRecallPhysicsMeshShapeSettings MeshShapeSettings;
+	FJPRPhysicsMeshShapeSettings MeshShapeSettings;
 
 	UPROPERTY()
 	TObjectPtr<class ARecallTrackEntityActor> TrackActor;

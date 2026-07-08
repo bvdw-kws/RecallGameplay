@@ -19,10 +19,10 @@ public class RecallGameplay : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[] {
 			"Core",
 			"CoreUObject",
+			"JoltPhysicsRuntime",
 			"MassCore",
 			"MassEntity",
 			"MassSpawner",
-			"JoltPhysicsRuntime",
 			"RecallCore",
 			"RecallSimulation",
 			"RecallPhysicsModule",

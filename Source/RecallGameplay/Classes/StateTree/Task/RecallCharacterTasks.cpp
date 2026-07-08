@@ -10,7 +10,7 @@
 #include "Engine/World.h"
 #include "StateTreeExecutionContext.h"
 #include "StateTreeLinker.h"
-#include "Physics/Character/RecallPhysicsCharacterVirtualObject.h"
+#include "Physics/Character/JPRPhysicsCharacterVirtualObject.h"
 #include "Simulation/Controller/RecallControllerFragments.h"
 #include "Simulation/Movement/RecallMovementFragments.h"
 #include "Simulation/Physics/RecallPhysicsBodyFragment.h"
@@ -117,7 +117,7 @@ EStateTreeRunStatus FRecallCharacterVirtualStanceTask::EnterState(FStateTreeExec
 	URecallPhysicsSubsystem& PhysicsSystem = Context.GetExternalData(PhysicsSystemHandle);
 
 	const FRecallPhysicsBodyView BodyView = PhysicsSystem.GetMutableBody(BodyFragment.BodyHandle);
-	const TWeakPtr<FRecallPhysicsCharacterVirtualBody> CharacterVirtualBody = BodyView.GetBody<FRecallPhysicsCharacterVirtualBody>();
+	const TWeakPtr<FJPRPhysicsCharacterVirtualBody> CharacterVirtualBody = BodyView.GetBody<FJPRPhysicsCharacterVirtualBody>();
 	if (!CharacterVirtualBody.IsValid())
 	{
 		return EStateTreeRunStatus::Failed;

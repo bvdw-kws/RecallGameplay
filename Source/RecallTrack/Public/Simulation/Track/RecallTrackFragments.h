@@ -8,7 +8,7 @@
 
 #include "Mass/EntityElementTypes.h"
 #include "Physics/RecallPhysicsTypes.h"
-#include "Physics/Common/RecallPhysicsCommonShapeTypes.h"
+#include "Physics/Common/JPRPhysicsCommonShapeTypes.h"
 
 #include "RecallTrackFragments.generated.h"
 
@@ -30,5 +30,5 @@ struct RECALLTRACK_API FRecallTrackConstSharedFragment : public FMassConstShared
 	FJPRPhysicsBodyParameters Params;
 	
 	UPROPERTY(VisibleAnywhere)
-	FRecallPhysicsMeshShapeSettings MeshShapeSettings;
+	FJPRPhysicsMeshShapeSettings MeshShapeSettings;
 };

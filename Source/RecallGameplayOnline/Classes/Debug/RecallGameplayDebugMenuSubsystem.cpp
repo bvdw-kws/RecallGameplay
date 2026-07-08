@@ -7,15 +7,17 @@
 
 #include "RecallGameplayDebugMenuSubsystem.h"
 
+#ifdef WITH_DEBUG_MENU
 #include "Debug/DebugMenuInterface.h"
 #include "System/Debug/DebugMenuSubsystem.h"
+#endif // WITH_DEBUG_MENU
 
 void URecallGameplayDebugMenuSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+
+#ifdef WITH_DEBUG_MENU
 	Collection.InitializeDependency<UDebugMenuSubsystem>();
-	
-#if WITH_DEBUG_MENU
 	DebugMenuSubsystem = UGameInstance::GetSubsystem<UDebugMenuSubsystem>(GetGameInstance());
 	if (DebugMenuSubsystem.IsValid())
 	{
@@ -28,7 +30,7 @@ void URecallGameplayDebugMenuSubsystem::Deinitialize()
 {
 	Super::Deinitialize();
 	
-#if WITH_DEBUG_MENU
+#ifdef WITH_DEBUG_MENU
 	DebugMenuSubsystem.Reset();
 #endif // WITH_DEBUG_MENU
 }
@@ -44,7 +46,7 @@ TStatId URecallGameplayDebugMenuSubsystem::GetStatId() const
 
 void URecallGameplayDebugMenuSubsystem::CreateDebugMenuItems(IDebugMenu& DebugMenu)
 {
-#if WITH_DEBUG_MENU
+#ifdef WITH_DEBUG_MENU
 	// AI
 	{
 		DebugMenu.AddItem_Bool(TEXT("AI"), "Show Env Query Result", false, TEXT("recall.stateTree.ShowEnvQueryResult"));

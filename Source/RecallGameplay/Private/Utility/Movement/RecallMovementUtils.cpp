@@ -9,7 +9,7 @@
 
 #include "Kismet/KismetMathLibrary.h"
 #include "MassExecutionContext.h"
-#include "Physics/Common/RecallPhysicsCommonObjects.h"
+#include "Physics/Common/JPRPhysicsCommonObjects.h"
 #include "Simulation/Attribute/RecallAttributeFragments.h"
 #include "Simulation/Controller/RecallControllerFragments.h"
 #include "Simulation/GameplayTag/RecallGameplayTagFragments.h"

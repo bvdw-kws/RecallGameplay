@@ -6,6 +6,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using UnrealBuildTool;
 
 public class RecallGameplayOnline : ModuleRules
@@ -18,8 +19,12 @@ public class RecallGameplayOnline : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[] {
 			"Core",
 			"CoreUObject",
-			"DebugMenu",
 			"RecallOnline",
 		});
+
+		if (Target.EnablePlugins.Contains("DebugMenu"))
+		{
+			PrivateDependencyModuleNames.Add("DebugMenu");
+		}
 	}
 }

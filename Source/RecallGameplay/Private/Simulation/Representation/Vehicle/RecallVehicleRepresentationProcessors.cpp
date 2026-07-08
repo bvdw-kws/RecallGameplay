@@ -9,7 +9,7 @@
 
 #include "Actor/Vehicle/Interface/RecallPhysicsVehicleActorInterface.h"
 #include "MassExecutionContext.h"
-#include "Physics/Vehicle/RecallPhysicsVehicleObject.h"
+#include "Physics/Vehicle/JPRPhysicsVehicleObject.h"
 #include "Simulation/Physics/RecallPhysicsBodyFragment.h"
 #include "Simulation/Physics/RecallPhysicsVehicleFragments.h"
 #include "Simulation/Representation/RecallActorRepresentationFragments.h"
@@ -65,7 +65,7 @@ void URecallVehicleRepresentationProcessor::Execute(FMassEntityManager& EntityMa
 
 			const FRecallPhysicsBodyFragment& BodyFragment = BodyList[EntityIndex];
 			const FConstRecallPhysicsBodyView Body = PhysicsSystem.GetBody(BodyFragment.BodyHandle);
-			const TWeakPtr<const FRecallPhysicsVehicleBody> Vehicle = StaticCastWeakPtr<const FRecallPhysicsVehicleBody>(Body.GetBody());
+			const TWeakPtr<const FJPRPhysicsVehicleBody> Vehicle = StaticCastWeakPtr<const FJPRPhysicsVehicleBody>(Body.GetBody());
 			if (!Vehicle.IsValid())
 			{
 				continue;

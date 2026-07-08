@@ -9,7 +9,7 @@
 
 #include "MassExecutionContext.h"
 #include "Actor/RecallTrackEntityActor.h"
-#include "Physics/Common/RecallPhysicsCommonShapeTypes.h"
+#include "Physics/Common/JPRPhysicsCommonShapeTypes.h"
 #include "Simulation/Physics/RecallPhysicsBodyFragment.h"
 #include "Simulation/Track/RecallTrackFragments.h" 
 #include "System/Physics/RecallPhysicsSubsystem.h"
@@ -68,11 +68,11 @@ void URecallTrackFragmentConstructor::Execute(FMassEntityManager& EntityManager,
 			const FMassEntityHandle Entity = Context.GetEntity(EntityIndex);
 
 			FRecallPhysicsBodyFragment& BodyFragment = BodyList[EntityIndex];
-			FRecallPhysicsStaticCompoundShape StaticCompoundShape;
+			FJPRPhysicsStaticCompoundShape StaticCompoundShape;
 			
 			for (const FRecallTrackSegment& TrackSegment : TrackActor->GetTrackSegments())
 			{
-				FRecallPhysicsStaticCompoundSubShape& MeshShape = StaticCompoundShape.SubShapes.AddDefaulted_GetRef();
+				FJPRPhysicsStaticCompoundSubShape& MeshShape = StaticCompoundShape.SubShapes.AddDefaulted_GetRef();
 				MeshShape.MeshShape.Vertices = TrackSegment.Vertices;
 				MeshShape.MeshShape.Triangles = TrackSegment.Triangles;
 				MeshShape.MeshShape.MeshShapeSettings = TrackConstSharedFragment.MeshShapeSettings;

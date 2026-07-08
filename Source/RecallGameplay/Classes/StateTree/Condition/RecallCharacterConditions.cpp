@@ -10,7 +10,7 @@
 #include "StateTreeExecutionContext.h"
 #include "StateTreeLinker.h"
 #include "Kismet/KismetStringLibrary.h"
-#include "Physics/Character/RecallPhysicsCharacterVirtualObject.h"
+#include "Physics/Character/JPRPhysicsCharacterVirtualObject.h"
 #include "Simulation/Physics/RecallPhysicsBodyFragment.h"
 #include "System/Physics/RecallPhysicsSubsystem.h"
 
@@ -31,8 +31,8 @@ bool FRecallCharacterStandingCondition::TestCondition(FStateTreeExecutionContext
 
 	bool bResult = true;
 
-	const TWeakPtr<const FRecallPhysicsCharacterVirtualBody> CharacterVirtualBody = PhysicsSystem
-		.GetBody(BodyFragment.BodyHandle).GetBody<FRecallPhysicsCharacterVirtualBody>();
+	const TWeakPtr<const FJPRPhysicsCharacterVirtualBody> CharacterVirtualBody = PhysicsSystem
+		.GetBody(BodyFragment.BodyHandle).GetBody<FJPRPhysicsCharacterVirtualBody>();
 	if (CharacterVirtualBody.IsValid())
 	{
 		bResult = CharacterVirtualBody.Pin()->IsStanding();
