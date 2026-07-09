@@ -18,9 +18,8 @@ class URecallDestroySignalProcessor : public URecallSignalProcessorBase
 public:
 	URecallDestroySignalProcessor(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	virtual void InitializeInternal(UObject& Owner, const TSharedRef<FMassEntityManager>& InEntityManager) override final;
-
 protected:
+	virtual void InitializeInternal(UObject& Owner, const TSharedRef<FMassEntityManager>& InEntityManager) override final;
 	virtual void ConfigureQueries(const TSharedRef<FMassEntityManager>& EntityManager) override final;
-	void SignalEntities(FMassEntityManager& EntityManager, FMassExecutionContext& Context, FRecallSignalNameLookup& EntitySignals) override final;
+	virtual void SignalEntities(FMassEntityManager& EntityManager, FMassExecutionContext& Context, FRecallSignalNameLookup& EntitySignals) override final;
 };

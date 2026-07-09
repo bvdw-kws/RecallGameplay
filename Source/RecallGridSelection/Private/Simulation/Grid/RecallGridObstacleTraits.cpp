@@ -7,6 +7,7 @@
 
 #include "Simulation/Grid/RecallGridObstacleTraits.h"
 
+#include "Engine/World.h"
 #include "MassEntityTemplateRegistry.h"
 #include "MassEntityView.h"
 #include "Simulation/Grid/RecallGridObstacleFragments.h"
