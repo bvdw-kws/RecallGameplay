@@ -20,11 +20,22 @@
 #include "Simulation/StateTree/RecallStateTreeSignalTypes.h"
 #include "System/AI/RecallStateTreeSubsystem.h"
 
+#if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
+#include "Engine/Engine.h"
+#endif // UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
+
 #define LOCTEXT_NAMESPACE "RecallCommonTasks"
 
 //----------------------------------------------------------------------//
 // FRecallDelayTask
 //----------------------------------------------------------------------//
+FRecallDelayTask::FRecallDelayTask()
+{
+	bConsideredForScheduling = false;
+	bShouldCopyBoundPropertiesOnTick = false;
+	bShouldCopyBoundPropertiesOnExitState = false;
+}
+
 bool FRecallDelayTask::Link(FStateTreeLinker& Linker)
 {
 	return true;
@@ -32,13 +43,13 @@ bool FRecallDelayTask::Link(FStateTreeLinker& Linker)
 
 EStateTreeRunStatus FRecallDelayTask::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const
 {
-	const FRecallStateTreeExecutionContext& MassContext = static_cast<FRecallStateTreeExecutionContext&>(Context);
-	const FRandomStream& RandomStream = MassContext.GetRandomStream();
-
 	FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
 
 	if (!InstanceData.bRunForever)
 	{
+		const FRecallStateTreeExecutionContext& MassContext = static_cast<FRecallStateTreeExecutionContext&>(Context);
+		
+		const FRandomStream& RandomStream = MassContext.GetRandomStream();
 		InstanceData.RemainingTime = RandomStream.FRandRange(
 			FMath::Max(0.0f, InstanceData.Duration - InstanceData.RandomDeviation), (InstanceData.Duration + InstanceData.RandomDeviation));
 
@@ -64,6 +75,12 @@ EStateTreeRunStatus FRecallDelayTask::Tick(FStateTreeExecutionContext& Context, 
 		if (InstanceData.RemainingTime <= UE_KINDA_SMALL_NUMBER)
 		{
 			return EStateTreeRunStatus::Succeeded;
+		}
+		else
+		{
+			const FRecallStateTreeExecutionContext& MassContext = static_cast<FRecallStateTreeExecutionContext&>(Context);
+			MassContext.GetSignalSystem().DelaySignalEntity(
+				Recall::StateTree::Signals::TickRequired, MassContext.GetEntity(), InstanceData.RemainingTime);
 		}
 	}
 

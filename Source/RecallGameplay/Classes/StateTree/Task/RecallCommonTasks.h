@@ -45,6 +45,8 @@ struct RECALLGAMEPLAY_API FRecallDelayTask : public FRecallStateTreeTaskBase
 
 	using FInstanceDataType = FRecallDelayTaskInstanceData;
 
+	FRecallDelayTask();
+	
 public:
 	virtual bool Link(FStateTreeLinker& Linker) override;
 	virtual const UStruct* GetInstanceDataType() const override { return FInstanceDataType::StaticStruct(); }
