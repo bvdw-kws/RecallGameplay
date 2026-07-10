@@ -40,8 +40,7 @@ public class RecallNavigation : ModuleRules
 			"Navmesh",
 		});
 		
-		bool bWithMultiWorld = Target.EnablePlugins.Contains("MultiWorld");
-		if (bWithMultiWorld)
+		if (RecallCore.IsPluginEnabled(Target, "MultiWorld"))
 		{
 			PrivateDependencyModuleNames.Add("MultiWorld");
 		}

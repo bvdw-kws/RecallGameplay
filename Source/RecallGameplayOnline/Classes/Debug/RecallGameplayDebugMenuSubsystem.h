@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "Tickable.h"
 
 #include "RecallGameplayDebugMenuSubsystem.generated.h"
 
