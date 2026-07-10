@@ -7,6 +7,7 @@
 #pragma once
 
 #include "StateTree/Player/RecallPlayerConditionBase.h"
+#include "Engine/DataTable.h"
 
 #include "RecallPlayerConditions.generated.h"
 
@@ -34,6 +35,34 @@ struct RECALLGAMEPLAY_API FRecallStateTreeWasInputJustPressedCondition : public 
 	UPROPERTY(EditAnywhere, Category="Parameter", meta=(RowType="/Script/RecallCore.RecallInputActionTableRow"))
 	FDataTableRowHandle InputAction;
 	
+	UPROPERTY(EditAnywhere, Category="Parameter", meta=(ClampMin=1))
+	int32 InputBufferDuration = 1;
+
+protected:
+	TStateTreeExternalDataHandle<struct FRecallPlayerInputFragment> InputFragmentHandle;
+};
+
+USTRUCT()
+struct RECALLGAMEPLAY_API FRecallStateTreeWasAnyInputJustPressedConditionInstanceData
+{
+	GENERATED_BODY()
+};
+UE_STATETREE_ZEROED_TRIVIALLY_COPIED_NO_DESTRUCTOR_INSTANCEDATA(FRecallStateTreeWasAnyInputJustPressedConditionInstanceData);
+
+USTRUCT(DisplayName="Was Any Input Pressed")
+struct RECALLGAMEPLAY_API FRecallStateTreeWasAnyInputJustPressedCondition : public FRecallPlayerConditionBase
+{
+	GENERATED_BODY()
+
+	using FInstanceDataType = FRecallStateTreeWasAnyInputJustPressedConditionInstanceData;
+
+	virtual const UStruct* GetInstanceDataType() const override { return FInstanceDataType::StaticStruct(); }
+	virtual bool Link(FStateTreeLinker& Linker) override;
+	virtual bool TestCondition(FStateTreeExecutionContext& Context) const override;
+
+	UPROPERTY(EditAnywhere, Category="Parameter")
+	bool bInvert = false;
+
 	UPROPERTY(EditAnywhere, Category="Parameter", meta=(ClampMin=1))
 	int32 InputBufferDuration = 1;
 

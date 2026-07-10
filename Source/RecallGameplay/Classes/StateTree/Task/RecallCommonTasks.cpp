@@ -76,12 +76,6 @@ EStateTreeRunStatus FRecallDelayTask::Tick(FStateTreeExecutionContext& Context, 
 		{
 			return EStateTreeRunStatus::Succeeded;
 		}
-		else
-		{
-			const FRecallStateTreeExecutionContext& MassContext = static_cast<FRecallStateTreeExecutionContext&>(Context);
-			MassContext.GetSignalSystem().DelaySignalEntity(
-				Recall::StateTree::Signals::TickRequired, MassContext.GetEntity(), InstanceData.RemainingTime);
-		}
 	}
 
 	return EStateTreeRunStatus::Running;

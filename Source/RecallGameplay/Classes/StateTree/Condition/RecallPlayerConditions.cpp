@@ -11,7 +11,6 @@
 #include "Simulation/Player/Input/RecallPlayerInputFragments.h"
 #include "StateTreeExecutionContext.h"
 #include "StateTreeLinker.h"
-#include "Kismet/KismetStringLibrary.h"
 
 //----------------------------------------------------------------------//
 // FRecallStateTreeWasInputJustPressedCondition
@@ -29,6 +28,22 @@ bool FRecallStateTreeWasInputJustPressedCondition::TestCondition(FStateTreeExecu
 	const FRecallPlayerInputFragment& InputFragment = Context.GetExternalData(InputFragmentHandle);
 	const bool bWasInputPressed = ControllerInputCommand != ERecallControllerInputCommand::None && InputFragment.WasInputPressed(ControllerInputCommand, InputBufferDuration);
 	return bWasInputPressed != bInvert;
+}
+
+//----------------------------------------------------------------------//
+// FRecallStateTreeWasAnyInputJustPressedCondition
+//----------------------------------------------------------------------//
+bool FRecallStateTreeWasAnyInputJustPressedCondition::Link(FStateTreeLinker& Linker)
+{
+	Linker.LinkExternalData(InputFragmentHandle);
+	return true;
+}
+
+bool FRecallStateTreeWasAnyInputJustPressedCondition::TestCondition(FStateTreeExecutionContext& Context) const
+{
+	const FRecallPlayerInputFragment& InputFragment = Context.GetExternalData(InputFragmentHandle);
+	const bool bWasAnyInputPressed = InputFragment.IsAnyInputPressed(InputBufferDuration);
+	return bWasAnyInputPressed != bInvert;
 }
 
 //----------------------------------------------------------------------//
