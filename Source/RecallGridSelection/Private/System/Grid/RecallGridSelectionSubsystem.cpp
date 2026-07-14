@@ -63,6 +63,8 @@ void URecallGridSelectionSubsystem::RegisterGridActor(ARecallGridActor* GridActo
 	}
 	
 	GridActorMap.Add(GridName, GridActor);
+
+	OnGridActorRegistered.Broadcast(GridActor, GridName);
 }
 
 int32 URecallGridSelectionSubsystem::GetDefaultGridCellIndex(const FName& GridName) const

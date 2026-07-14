@@ -7,6 +7,7 @@
 
 #include "RecallGridActor.h"
 
+#include "Engine/World.h"
 #include "RecallGridCellActor.h"
 #include "System/Grid/RecallGridSelectionSubsystem.h"
 

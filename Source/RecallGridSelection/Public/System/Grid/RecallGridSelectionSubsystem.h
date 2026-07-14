@@ -15,8 +15,10 @@
 
 class ARecallGridActor;
 
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnRecallGridActorRegistered, ARecallGridActor* /*GridActor*/, const FName& /*GridName*/);
+
 UCLASS(MinimalAPI)
-class URecallGridSelectionSubsystem : 
+class URecallGridSelectionSubsystem :
 	public UWorldSubsystem,
 	public IRecallSimulationReactSystemInterface
 {
@@ -24,6 +26,12 @@ class URecallGridSelectionSubsystem :
 
 public:
 	void RegisterGridActor(ARecallGridActor* GridActor, const FName& GridName = NAME_None);
+
+	// Broadcast at the end of RegisterGridActor, i.e. from within the grid actor's own BeginPlay.
+	// Since world subsystems' OnWorldBeginPlay runs before any actor's BeginPlay, code that needs
+	// grid data (size, cells, etc.) as soon as it's available should bind here instead of trying
+	// to read it from OnWorldBeginPlay directly.
+	FOnRecallGridActorRegistered OnGridActorRegistered;
 
 	RECALLGRIDSELECTION_API int32 GetDefaultGridCellIndex(const FName& GridName = NAME_None) const;
 	
