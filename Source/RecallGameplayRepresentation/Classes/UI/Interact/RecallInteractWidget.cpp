@@ -104,7 +104,7 @@ void URecallInteractWidget::SetContextual(const FRecallInteractProgressRepresent
 		BindActionArgs.bIsPersistent = true;
 		BindActionArgs.bConsumeInput = false;
 		
-		const FUIActionBindingHandle NewHandle = RegisterUIActionBinding(BindActionArgs);
+		const FUIActionBindingHandle NewHandle = UCommonUserWidget::RegisterUIActionBinding(BindActionArgs);
 		ContextualActionBindingHandles.Add(EventStatePtr->InputAction, NewHandle);
 	}
 
