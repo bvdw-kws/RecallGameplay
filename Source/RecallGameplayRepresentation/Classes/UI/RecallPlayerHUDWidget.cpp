@@ -16,6 +16,7 @@
 URecallPlayerHUDWidget::URecallPlayerHUDWidget(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	InputConfig = EExtendedCommonInputMode::Game;
 	bStartedConversation = false;
 }
 

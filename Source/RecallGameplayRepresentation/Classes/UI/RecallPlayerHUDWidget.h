@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "ExtendedCommonUserWidget.h"
+#include "ExtendedCommonActivatableWidget.h"
 #include "Representation/Conversation/RecallConversationReactInterface.h"
 
 #include "RecallPlayerHUDWidget.generated.h"
@@ -16,21 +16,21 @@
  */
 UCLASS(Abstract)
 class RECALLGAMEPLAYREPRESENTATION_API URecallPlayerHUDWidget :
-	public UExtendedCommonUserWidget,
+	public UExtendedCommonActivatableWidget,
 	public IRecallConversationReactInterface
 {
 	GENERATED_UCLASS_BODY()
 
 	// UUserWidget implementation Begin
 public:
-	virtual void NativeConstruct() override;
-	virtual void NativeDestruct() override;
+	virtual void OnConversationUpdatedEvent(const FClientConversationMessagePayload& Message, int32 PlayerIndex = 0) override;
+	virtual void OnConversationStatusChangedEvent(bool bStarted, int32 PlayerIndex = 0) override;
 	// UUserWidget implementation End
 
 	// UUserWidget implementation Begin
 protected:
-	virtual void OnConversationUpdatedEvent(const FClientConversationMessagePayload& Message, int32 PlayerIndex = 0) override;
-	virtual void OnConversationStatusChangedEvent(bool bStarted, int32 PlayerIndex = 0) override;
+	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 	// UUserWidget implementation End
 	
 protected:
