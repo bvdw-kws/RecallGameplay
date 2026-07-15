@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "System/Interface/RecallSimulationReactSystemInterface.h"
 #include "Mass/ExternalSubsystemTraits.h"
@@ -31,7 +30,7 @@ public:
 
 	void TickPathQueue();
 
-protected:
+public:
 	// UWorldSubsystem implementation Begin
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override final;
 	virtual void Deinitialize() override final;
