@@ -75,7 +75,7 @@ void URecallGameRuleDestroyEntitiesProcessor::Execute(FMassEntityManager& Entity
 
 #if RECALL_DESYNC_LOG
                     RECALL_DESYNC_LOG_INT(Context.GetWorld(), "GameRuleDestroy_EntityDestroyed", Entity.Index);
-#endif
+#endif // RECALL_DESYNC_LOG
                     break; // Entity already marked for destruction, no need to check other commands
                 }
             }
@@ -138,7 +138,7 @@ void URecallGameRuleApplyTagProcessor::Execute(FMassEntityManager& EntityManager
 #if RECALL_DESYNC_LOG
                     const FMassEntityHandle Entity = Context.GetEntity(EntityIndex);
                     RECALL_DESYNC_LOG_INT(Context.GetWorld(), "GameRuleApplyTag_TagsModified", Entity.Index);
-#endif
+#endif // RECALL_DESYNC_LOG
                     
                     // Note: We don't break here because multiple commands might apply to the same entity
                     // and we want to apply all matching tag changes
@@ -237,7 +237,7 @@ void URecallGameRuleSwapPositionsProcessor::Execute(FMassEntityManager& EntityMa
 #if RECALL_DESYNC_LOG
         RECALL_DESYNC_LOG_VEC(Context.GetWorld(), "GameRuleSwapPositions_NewPosition", NewPosition);
         RECALL_DESYNC_LOG_INT(Context.GetWorld(), "GameRuleSwapPositions_Entity", Entity.Index);
-#endif
+#endif // RECALL_DESYNC_LOG
         
         if (Command.bAnimateSwap)
         {
@@ -350,7 +350,7 @@ void URecallGameRuleMoveToPositionProcessor::Execute(FMassEntityManager& EntityM
 #if RECALL_DESYNC_LOG
             RECALL_DESYNC_LOG_VEC(Context.GetWorld(), "GameRuleMoveToPosition_TargetPosition", TargetPosition);
             RECALL_DESYNC_LOG_INT(Context.GetWorld(), "GameRuleMoveToPosition_Entity", Entity.Index);
-#endif
+#endif // RECALL_DESYNC_LOG
             
             // Check if we should animate
             if (Command.bAnimateMovement)

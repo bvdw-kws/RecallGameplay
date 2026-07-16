@@ -7,6 +7,8 @@
 
 #include "RecallGridCursorTasks.h"
 
+#include "Desync/RecallDesyncLog.h"
+#include "Engine/World.h"
 #include "MassEntityManager.h"
 #include "MassEntityView.h"
 #include "RecallSignalSubsystem.h"
@@ -112,35 +114,54 @@ EStateTreeRunStatus FRecallGridMoveCursorToTargetTask::Tick(FStateTreeExecutionC
 	// Get cursor entity and current position
 	if (!EntityManager.IsEntityValid(CursorOwnerFragment.GridSelectionEntity))
 	{
+#if RECALL_DESYNC_LOG
+		RECALL_DESYNC_LOG_STR(Context.GetWorld(), MoveCursorToTarget_Failed, FString(TEXT("Invalid GridSelectionEntity")));
+#endif // RECALL_DESYNC_LOG
 		return EStateTreeRunStatus::Failed;
 	}
-	
+
 	const FMassEntityView CursorEntityView(EntityManager, CursorOwnerFragment.GridSelectionEntity);
 	FRecallGridSelectionFragment* CursorFragment = CursorEntityView.GetFragmentDataPtr<FRecallGridSelectionFragment>();
 	if (!CursorFragment)
 	{
+#if RECALL_DESYNC_LOG
+		RECALL_DESYNC_LOG_STR(Context.GetWorld(), MoveCursorToTarget_Failed, FString(TEXT("Missing FRecallGridSelectionFragment")));
+#endif // RECALL_DESYNC_LOG
 		return EStateTreeRunStatus::Failed;
 	}
-	
+
 	// Calculate next cell using grid subsystem navigation
 	const URecallGridSelectionSubsystem& GridSelectionSystem = Context.GetExternalData(GridSelectionSystemHandle);
 	const int32 NextCellIndex = GridSelectionSystem.GetNextCellTowardsTarget(
 		CursorFragment->GridCellIndex, InstanceData.TargetGridCellIndex);
-	
+
+#if RECALL_DESYNC_LOG
+	RECALL_DESYNC_LOG_STR(Context.GetWorld(), MoveCursorToTarget_Tick, FString::Printf(
+		TEXT("Entity: %s, CurrentCell: %d, NextCell: %d, TargetCell: %d"),
+		*MassContext.GetEntity().DebugGetDescription(), CursorFragment->GridCellIndex, NextCellIndex, InstanceData.TargetGridCellIndex));
+#endif // RECALL_DESYNC_LOG
+
 	if (!ensure(NextCellIndex != INDEX_NONE))
 	{
+#if RECALL_DESYNC_LOG
+		RECALL_DESYNC_LOG_STR(Context.GetWorld(), MoveCursorToTarget_Failed, FString(TEXT("Invalid NextCellIndex")));
+#endif // RECALL_DESYNC_LOG
 		return EStateTreeRunStatus::Failed;
 	}
-	
+
 	// Move cursor to next cell
 	CursorFragment->GridCellIndex = NextCellIndex;
-	
+
 	// Check if reached target
 	if (NextCellIndex == InstanceData.TargetGridCellIndex)
 	{
+#if RECALL_DESYNC_LOG
+		RECALL_DESYNC_LOG_STR(Context.GetWorld(), MoveCursorToTarget_Succeeded, FString::Printf(
+			TEXT("Entity: %s, ReachedCell: %d"), *MassContext.GetEntity().DebugGetDescription(), NextCellIndex));
+#endif // RECALL_DESYNC_LOG
 		return EStateTreeRunStatus::Succeeded;
 	}
-	
+
 	MassContext.GetSignalSystem().DelaySignalEntity(
 		Recall::StateTree::Signals::TickRequired, MassContext.GetEntity(), InstanceData.GetMovementInterval());
 
