@@ -27,6 +27,14 @@ bool FRecallGridCursorSelectionEvaluator::Link(FStateTreeLinker& Linker)
 
 void FRecallGridCursorSelectionEvaluator::TreeStart(FStateTreeExecutionContext& Context) const
 {
+	Super::TreeStart(Context);
+	
+	FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
+	InstanceData.bFoundCell = false;
+	InstanceData.GridCellIndex = INDEX_NONE;
+	InstanceData.GridCellPosition = FVector::ZeroVector;
+	InstanceData.bIsGridCellEmpty = false;
+	InstanceData.GridCellEntity.Reset();
 }
 
 void FRecallGridCursorSelectionEvaluator::Tick(FStateTreeExecutionContext& Context, const float DeltaTime) const
