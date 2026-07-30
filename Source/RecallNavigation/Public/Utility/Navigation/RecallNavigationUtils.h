@@ -18,7 +18,7 @@ struct FRecallNavigationContext
 	const FMassEntityHandle& Entity;
 	const struct FRecallNavigationAgentConstSharedFragment& AgentConstSharedFragment;
 	const struct FRecallTransformFragment& TransformFragment;
-	struct FRecallNavigationAgentFragment& NavigationFragment;
+	struct FRecallNavMeshPathRequestFragment& NavigationFragment;
 	struct FRecallMovementFragment& MovementFragment;
 	struct FRecallNavLinkTraversalFragment& NavLinkTraversalFragment;
 	

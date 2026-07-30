@@ -7,8 +7,6 @@
 
 #include "RecallConversationInputTypes.h"
 
-#include <Windows.Data.Xml.Dom.h>
-
 #include "ConversationTypes.h"
 #include "Utility/Input/RecallInputUtils.h"
 

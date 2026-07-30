@@ -52,7 +52,7 @@ void URecallDevicePreloadSubsystem::PreloadDeviceEntityConfigs()
 	int32 TotalSkippedCount = 0;
 
 	// Get all device assets from the device subsystem
-	for (const TPair<FName, TObjectPtr<const URecallDeviceAsset>>& DeviceAssetPair : DeviceSubsystem.GetAllDeviceAssets())
+	for (const TPair<FName, TObjectPtr<URecallDeviceAsset>>& DeviceAssetPair : DeviceSubsystem.GetAllDeviceAssets())
 	{
 		const URecallDeviceAsset* DeviceAsset = DeviceAssetPair.Value;
 		if (!DeviceAsset || DeviceAsset->EntityConfig.IsNull())
