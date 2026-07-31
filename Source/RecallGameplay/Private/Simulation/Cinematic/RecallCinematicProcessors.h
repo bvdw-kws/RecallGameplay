@@ -8,6 +8,8 @@
 
 #include "RecallSignalProcessorBase.h"
 
+#include "MassEntityQuery.h"
+
 #include "RecallCinematicProcessors.generated.h"
 
 /**

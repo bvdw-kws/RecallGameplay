@@ -45,7 +45,6 @@ void ARecallGridCellActor::SetCellSize_Implementation(float SizeX, float SizeY)
 	if (BoxComponent)
 	{
 		BoxComponent->SetBoxExtent(FVector(SizeX * 0.5f, SizeY * 0.5f, CellHalfHeight));
-		BoxComponent->SetRelativeLocation(FVector(0.0, 0.0, CellHalfHeight));
 	}
 }
 

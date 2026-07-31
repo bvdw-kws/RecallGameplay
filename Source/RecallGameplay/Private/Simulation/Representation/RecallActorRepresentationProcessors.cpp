@@ -8,7 +8,9 @@
 #include "RecallActorRepresentationProcessors.h"
 
 #include "Actor/RecallRepresentationActor.h"
+#include "Actor/RecallSkeletalMeshActorRepresentationInterface.h"
 #include "Animation/RecallAnimInstance.h"
+#include "Animation/SkeletalMeshActor.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "MassExecutionContext.h"
 #include "Physics/RecallPhysicsObjects.h"
@@ -312,6 +314,21 @@ void URecallActorAnimationRepresentationProcessor::ConfigureQueries(const TShare
 	EntityQuery.AddSubsystemRequirement<URecallPhysicsSubsystem>(EMassFragmentAccess::ReadOnly);
 }
 
+static USkeletalMeshComponent* GetSkeletalMeshComponent(const AActor* Actor)
+{
+	if (const ASkeletalMeshActor* SkeletalMeshActor = Cast<ASkeletalMeshActor>(Actor))
+	{
+		return SkeletalMeshActor->GetSkeletalMeshComponent();
+	}
+
+	if (IsValid(Actor) && Actor->Implements<URecallSkeletalMeshActorRepresentationInterface>())
+	{
+		return IRecallSkeletalMeshActorRepresentationInterface::Execute_GetSkeletalMeshComponent(Actor);
+	}
+
+	return nullptr;
+}
+
 void URecallActorAnimationRepresentationProcessor::Execute(FMassEntityManager& EntityManager, FMassExecutionContext& Context)
 {
 	QUICK_SCOPE_CYCLE_COUNTER(Recall_Actor_AnimationRepresentation);
@@ -342,48 +359,51 @@ void URecallActorAnimationRepresentationProcessor::Execute(FMassEntityManager& E
 				continue;
 			}
 
-			Actor->ForEachComponent<USkeletalMeshComponent>(false, [&](USkeletalMeshComponent* Component)
+			USkeletalMeshComponent* Component = GetSkeletalMeshComponent(Actor.Get());
+			if (Component == nullptr)
 			{
-				URecallAnimInstance* AnimInstance = Cast<URecallAnimInstance>(Component->GetAnimInstance());
-				if (IsValid(AnimInstance))
+				continue;
+			}
+
+			URecallAnimInstance* AnimInstance = Cast<URecallAnimInstance>(Component->GetAnimInstance());
+			if (IsValid(AnimInstance))
+			{
+				if (MovementList.IsValidIndex(EntityIndex))
 				{
-					if (MovementList.IsValidIndex(EntityIndex))
-					{
-						const FRecallMovementFragment& MovementFragment = MovementList[EntityIndex];
-						AnimInstance->MovementDirection = FVector2f(MovementFragment.MovementDirection.X, MovementFragment.MovementDirection.Y);
-					}
+					const FRecallMovementFragment& MovementFragment = MovementList[EntityIndex];
+					AnimInstance->MovementDirection = FVector2f(MovementFragment.MovementDirection.X, MovementFragment.MovementDirection.Y);
+				}
 
-					if (BodyList.IsValidIndex(EntityIndex))
+				if (BodyList.IsValidIndex(EntityIndex))
+				{
+					const FRecallPhysicsBodyFragment& BodyFragment = BodyList[EntityIndex];
+					const FConstRecallPhysicsBodyView Body = PhysicsSystem.GetBody(BodyFragment.BodyHandle);
+					if (Body.IsValid())
 					{
-						const FRecallPhysicsBodyFragment& BodyFragment = BodyList[EntityIndex];
-						const FConstRecallPhysicsBodyView Body = PhysicsSystem.GetBody(BodyFragment.BodyHandle);
-						if (Body.IsValid())
-						{							
-							AnimInstance->PhysicsVelocity = Recall::Math::Utils::UnitsPerFrameToPerSecond(
-								Body.GetLinearVelocity());
-						}
-					}
-
-					if (CharacterList.IsValidIndex(EntityIndex))
-					{
-						const FJPRPhysicsCharacterFragment& CharacterFragment = CharacterList[EntityIndex];
-						AnimInstance->bGrounded = CharacterFragment.bIsSupported;
-					}
-					
-					if (ControllerList.IsValidIndex(EntityIndex))
-					{
-						const FRecallControllerFragment& ControllerFragment = ControllerList[EntityIndex];
-						AnimInstance->ControlRotation = ControllerFragment.ControlRotation;
+						AnimInstance->PhysicsVelocity = Recall::Math::Utils::UnitsPerFrameToPerSecond(
+							Body.GetLinearVelocity());
 					}
 				}
 
-				// We don't want to actually set the delta time for the animation tick to 0 since it will cause a bug with anim notify states
-				// triggering their Begin event multiple times.
-				Component->SetExternalDeltaTime(AnimationDeltaTime > 0 ? AnimationDeltaTime : DeltaTime);
+				if (CharacterList.IsValidIndex(EntityIndex))
+				{
+					const FJPRPhysicsCharacterFragment& CharacterFragment = CharacterList[EntityIndex];
+					AnimInstance->bGrounded = CharacterFragment.bIsSupported;
+				}
 
-				const bool StopAnimationTick = DeltaFrame <= 0; // || AnimationFragment.bPauseAnimation
-				Component->EnableExternalUpdate(!StopAnimationTick);
-			});
+				if (ControllerList.IsValidIndex(EntityIndex))
+				{
+					const FRecallControllerFragment& ControllerFragment = ControllerList[EntityIndex];
+					AnimInstance->ControlRotation = ControllerFragment.ControlRotation;
+				}
+			}
+
+			// We don't want to actually set the delta time for the animation tick to 0 since it will cause a bug with anim notify states
+			// triggering their Begin event multiple times.
+			Component->SetExternalDeltaTime(AnimationDeltaTime > 0 ? AnimationDeltaTime : DeltaTime);
+
+			const bool StopAnimationTick = DeltaFrame <= 0; // || AnimationFragment.bPauseAnimation
+			Component->EnableExternalUpdate(!StopAnimationTick);
 		}
 	});
 }

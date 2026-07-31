@@ -8,6 +8,8 @@
 
 #include "MassProcessor.h"
 
+#include "MassEntityQuery.h"
+
 #include "RecallPathFollowerProcessors.generated.h"
 
 UCLASS()
