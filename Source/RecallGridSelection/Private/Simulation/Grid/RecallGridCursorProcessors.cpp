@@ -525,6 +525,8 @@ void URecallGridCursorRepresentationProcessor::Execute(FMassEntityManager& Entit
 				continue;
 			}
 
+			CursorActor->SetActorHiddenInGame(CursorOwnerFragment.bHideCursor);
+
 			// Set owner faction on cursor actor if interface is implemented
 			if (CursorActor->GetClass()->ImplementsInterface(URecallGridCursorActorInterface::StaticClass()))
 			{

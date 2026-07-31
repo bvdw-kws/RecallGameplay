@@ -38,6 +38,9 @@ struct RECALLGRIDSELECTION_API FRecallGridCursorOwnerFragment : public FMassFrag
 	
 	UPROPERTY(VisibleAnywhere)
 	FVector2D CursorPosition = FVector2D::ZeroVector;
+
+	UPROPERTY(VisibleAnywhere)
+	bool bHideCursor = false;
 };
 
 USTRUCT()
