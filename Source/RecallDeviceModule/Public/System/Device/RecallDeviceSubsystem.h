@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "UObject/SoftObjectPtr.h"
 
 #include "RecallDeviceSubsystem.generated.h"
 

@@ -56,14 +56,14 @@ public:
 	// Cursor navigation utility
 	RECALLGRIDSELECTION_API int32 GetNextCellTowardsTarget(int32 CurrentCellIndex, int32 TargetCellIndex, const FName& GridName = NAME_None) const;
 	
-	int32 ReserveCell(int32 CellIndex, const FName& GridName = NAME_None);
-	void RegisterCell(int32 CellIndex, const FMassEntityHandle& Entity, const FName& GridName = NAME_None);
-	void RegisterCell(const FVector& Position, const FMassEntityHandle& Entity, const FName& GridName = NAME_None);
-	void UnregisterCell(int32 CellIndex, const FName& GridName = NAME_None);
+	RECALLGRIDSELECTION_API int32 ReserveCell(int32 CellIndex, const FName& GridName = NAME_None);
+	RECALLGRIDSELECTION_API void RegisterCell(int32 CellIndex, const FMassEntityHandle& Entity, const FName& GridName = NAME_None);
+	RECALLGRIDSELECTION_API void RegisterCell(const FVector& Position, const FMassEntityHandle& Entity, const FName& GridName = NAME_None);
+	RECALLGRIDSELECTION_API void UnregisterCell(int32 CellIndex, const FName& GridName = NAME_None);
 	
-	int32 GetCellReservationNumber(int32 CellIndex, const FName& GridName = NAME_None) const;
+	RECALLGRIDSELECTION_API int32 GetCellReservationNumber(int32 CellIndex, const FName& GridName = NAME_None) const;
 	
-protected:
+public:
 	// UWorldSubsystem implementation Begin
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override final;
 	virtual void Deinitialize() override final;
