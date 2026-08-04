@@ -7,6 +7,7 @@
 
 #include "Utility/GameplayTag/RecallGameplayTagUtils.h"
 
+#include "Data/Device/RecallDeviceAsset.h"
 #include "Data/Faction/RecallFactionTypes.h"
 #include "Data/GameplayTag/RecallGameplayTagConditionTypes.h"
 #include "GameplayTag/RecallGameplayTagTypes.h"
@@ -83,6 +84,16 @@ FGameplayTagContainer GetFactionTags(const FRecallGameplayTagCountMap& GameplayT
 FGameplayTagContainer GetFactionTags(const FGameplayTagContainer& GameplayTags)
 {
 	return GameplayTags.Filter(Faction_Parent.GetTag().GetSingleTagContainer());;
+}
+
+FGameplayTagContainer GetDeviceTags(const FRecallGameplayTagCountMap& GameplayTagCountMap)
+{
+	return GetDeviceTags(GameplayTagCountMap.GetTags());
+}
+
+FGameplayTagContainer GetDeviceTags(const FGameplayTagContainer& GameplayTags)
+{
+	return GameplayTags.Filter(Device_Parent.GetTag().GetSingleTagContainer());
 }
 
 bool IsSameFaction(

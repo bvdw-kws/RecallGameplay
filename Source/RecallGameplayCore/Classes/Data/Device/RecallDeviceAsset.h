@@ -13,6 +13,7 @@
 #include "RecallDeviceAsset.generated.h"
 
 RECALLGAMEPLAYCORE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Device_Dummy);
+RECALLGAMEPLAYCORE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Device_Parent);
 
 UCLASS()
 class RECALLGAMEPLAYCORE_API URecallDeviceAsset : public UPrimaryDataAsset
@@ -25,6 +26,12 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, meta=(GameplayTagFilter="Device"))
 	FGameplayTag DeviceTag;
+
+	/**
+	 * Icon of the device.
+	 */
+	UPROPERTY(EditAnywhere, meta=( AllowPrivateAccess="true", DisplayThumbnail="true", DisplayName="Image", AllowedClasses="/Script/Engine.Texture,/Script/Engine.MaterialInterface,/Script/Engine.SlateTextureAtlasInterface", DisallowedClasses = "/Script/MediaAssets.MediaTexture"))
+	TSoftObjectPtr<UObject> Icon;
 
 	/**
 	 * Localized name of the device.

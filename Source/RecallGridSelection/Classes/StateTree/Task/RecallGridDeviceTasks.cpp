@@ -13,11 +13,13 @@
 #include "Entity/RecallGridDeviceSpawnCommand.h"
 #include "StateTreeExecutionContext.h"
 #include "StateTreeLinker.h"
+#include "Simulation/GameplayTag/RecallGameplayTagFragments.h"
 #include "Simulation/Grid/RecallGridObstacleFragments.h"
 #include "StateTree/RecallStateTreeExecutionContext.h"
 #include "System/Device/RecallDeviceSubsystem.h"
 #include "System/Entity/RecallEntityAsyncSpawnSubsystem.h"
 #include "System/Grid/RecallGridSelectionSubsystem.h"
+#include "Utility/GameplayTag/RecallGameplayTagUtils.h"
 
 //----------------------------------------------------------------------//
 // FRecallGridDestroyDeviceTask
@@ -31,7 +33,8 @@ bool FRecallGridDestroyDeviceTask::Link(FStateTreeLinker& Linker)
 EStateTreeRunStatus FRecallGridDestroyDeviceTask::EnterState(FStateTreeExecutionContext& Context,
 	const FStateTreeTransitionResult& Transition) const
 {
-	const FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
+	FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
+	InstanceData.DestroyedDeviceTag = FGameplayTag::EmptyTag;
 
 	URecallGridSelectionSubsystem& GridSelectionSystem = Context.GetExternalData(GridSelectionSystemHandle);
 	if (GridSelectionSystem.IsEmptyCell(InstanceData.GridCellIndex))
@@ -43,7 +46,7 @@ EStateTreeRunStatus FRecallGridDestroyDeviceTask::EnterState(FStateTreeExecution
 	{
 		const FRecallStateTreeExecutionContext& RecallContext = static_cast<FRecallStateTreeExecutionContext&>(Context);
 		const FMassEntityManager& EntityManager = RecallContext.GetEntityManager();
-		
+
 		const FMassEntityHandle CellEntity = GridSelectionSystem.GetGridCellEntity(InstanceData.GridCellIndex);
 		if (EntityManager.IsEntityValid(CellEntity))
 		{
@@ -51,6 +54,12 @@ EStateTreeRunStatus FRecallGridDestroyDeviceTask::EnterState(FStateTreeExecution
 			if (auto* ObstacleFragment = CellEntityView.GetFragmentDataPtr<FRecallGridObstacleFragment>())
 			{
 				ObstacleFragment->GridCellIndex = INDEX_NONE;
+			}
+
+			if (const auto* GameplayTagFragment = CellEntityView.GetFragmentDataPtr<FRecallGameplayTagFragment>())
+			{
+				const FGameplayTagContainer DeviceTags = Recall::GameplayTag::Utils::GetDeviceTags(GameplayTagFragment->GameplayTagCountMap);
+				InstanceData.DestroyedDeviceTag = DeviceTags.First();
 			}
 		}
 		RecallContext.GetMassExecutionContext().Defer().DestroyEntity(CellEntity);

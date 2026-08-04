@@ -8,6 +8,7 @@
 #include "RecallDeviceAsset.h"
 
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(Device_Dummy,	"Device.Dummy",		"Dummy device");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Device_Parent,	"Device",			"Device parent");
 
 const FPrimaryAssetType URecallDeviceAsset::AssetType("MSDeviceData");
 

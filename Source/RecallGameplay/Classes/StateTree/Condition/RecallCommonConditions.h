@@ -57,7 +57,7 @@ UE_STATETREE_CONSTRUCTED_TRIVIALLY_COPIED_NO_DESTRUCTOR_INSTANCEDATA(FRecallGame
 /**
  * Evaluate if any of the entities in the array meet the gameplay tag condition.
  */
-USTRUCT(DisplayName="Gameplay Tag")
+USTRUCT(DisplayName="Gameplay Tag Filter")
 struct RECALLGAMEPLAY_API FRecallGameplayTagFilterCondition : public FRecallStateTreeConditionBase
 {
 	GENERATED_BODY()

@@ -18,6 +18,9 @@ struct RECALLGRIDSELECTION_API FRecallGridDestroyDeviceTaskInstanceData
 	
 	UPROPERTY(EditAnywhere, Category=Parameter)
 	int32 GridCellIndex = INDEX_NONE;
+
+	UPROPERTY(VisibleAnywhere, Category=Output, meta=(GameplayTagFilter="Device"))
+	FGameplayTag DestroyedDeviceTag;
 };
 
 USTRUCT(meta=(DisplayName="Destroy Device On Grid"))

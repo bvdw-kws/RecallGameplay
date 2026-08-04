@@ -7,6 +7,7 @@
 
 #include "RecallGridDeviceSpawnCommand.h"
 
+#include "Engine/World.h"
 #include "MassEntityManager.h"
 #include "MassEntityView.h"
 #include "Simulation/GameplayTag/RecallGameplayTagFragments.h"

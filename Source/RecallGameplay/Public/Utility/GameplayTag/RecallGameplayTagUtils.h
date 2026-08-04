@@ -20,6 +20,8 @@ RECALLGAMEPLAY_API extern bool EvaluateCondition(
 	
 RECALLGAMEPLAY_API extern FGameplayTagContainer GetFactionTags(const FRecallGameplayTagCountMap& GameplayTagCountMap);
 RECALLGAMEPLAY_API extern FGameplayTagContainer GetFactionTags(const FGameplayTagContainer& GameplayTags);
+RECALLGAMEPLAY_API extern FGameplayTagContainer GetDeviceTags(const FRecallGameplayTagCountMap& GameplayTagCountMap);
+RECALLGAMEPLAY_API extern FGameplayTagContainer GetDeviceTags(const FGameplayTagContainer& GameplayTags);
 RECALLGAMEPLAY_API extern bool IsSameFaction(
 	const FRecallGameplayTagCountMap& lGameplayTagCountMap, const FRecallGameplayTagCountMap& rGameplayTagCountMap);
 	
