@@ -456,7 +456,10 @@ static FVector GetSelectionPosition(FMassExecutionContext& Context,
 		}
 	}
 
-	return FVector::ZeroVector;
+	// The grid selection entity is spawned asynchronously and may not be valid yet (e.g. on the
+	// first frames after level start). Fall back to the default cell so the cursor actor doesn't
+	// visually sit at the world origin until the entity exists and/or the player provides input.
+	return GridSelectionSystem.GetGridCellPosition(GridSelectionSystem.GetDefaultGridCellIndex());
 }
 
 static FVector GetGridCursorPosition(FMassExecutionContext& Context,
