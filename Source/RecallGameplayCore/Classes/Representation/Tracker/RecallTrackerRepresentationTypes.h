@@ -8,6 +8,7 @@
 
 #include "CoreMinimal.h"
 #include "Mass/EntityElementTypes.h"
+#include "Mass/EntityHandle.h"
 
 #include "RecallTrackerRepresentationTypes.generated.h"
 
