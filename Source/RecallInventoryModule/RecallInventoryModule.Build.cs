@@ -14,7 +14,7 @@ public class RecallInventoryModule : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Engine" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Engine", "GameplayTags" });
 		PrivateDependencyModuleNames.AddRange(new string[] {
 			"Core",
 			"CoreUObject",
@@ -29,7 +29,6 @@ public class RecallInventoryModule : ModuleRules
 			"RecallGameplay",
 			"RecallInteractModule",
 			"StateTreeModule",
-			"GameplayTags",
 		});
 	}
 }
