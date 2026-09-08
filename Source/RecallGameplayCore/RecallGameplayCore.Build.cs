@@ -15,10 +15,11 @@ public class RecallGameplayCore : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicDependencyModuleNames.AddRange( new string[] {
-			"Engine", 
-			"CommonConversationRuntime", 
-			"RecallCore", 
+			"Engine",
+			"CommonConversationRuntime",
+			"RecallCore",
 			"GameplayTags",
+			"MassCore",
 		});
 		
 		PrivateDependencyModuleNames.AddRange(new string[] {
@@ -27,7 +28,6 @@ public class RecallGameplayCore : ModuleRules
 			"RecallSimulation",
 			"MassSpawner",
 			"MassEntity",
-			"MassCore",
 			"EnhancedInput",
 			"DeveloperSettings",
 		});
