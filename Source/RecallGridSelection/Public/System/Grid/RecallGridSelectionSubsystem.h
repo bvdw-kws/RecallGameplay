@@ -26,11 +26,10 @@ class URecallGridSelectionSubsystem :
 
 public:
 	void RegisterGridActor(ARecallGridActor* GridActor, const FName& GridName = NAME_None);
+	RECALLGRIDSELECTION_API bool AddGrid(const FName& GridName, const FRecallGridDefinition& GridDefinition);
+	RECALLGRIDSELECTION_API bool RemoveGrid(const FName& GridName);
 
-	// Broadcast at the end of RegisterGridActor, i.e. from within the grid actor's own BeginPlay.
-	// Since world subsystems' OnWorldBeginPlay runs before any actor's BeginPlay, code that needs
-	// grid data (size, cells, etc.) as soon as it's available should bind here instead of trying
-	// to read it from OnWorldBeginPlay directly.
+	// Broadcast from Start after the static actor's grid has been copied into the runtime grid map.
 	FOnRecallGridActorRegistered OnGridActorRegistered;
 
 	RECALLGRIDSELECTION_API int32 GetDefaultGridCellIndex(const FName& GridName = NAME_None) const;
@@ -46,7 +45,7 @@ public:
 
 	RECALLGRIDSELECTION_API int32 GetGridSizeX(const FName& GridName = NAME_None) const;
 	RECALLGRIDSELECTION_API int32 GetGridSizeY(const FName& GridName = NAME_None) const;
-	RECALLGRIDSELECTION_API int32 GetGridCellSize(const FName& GridName = NAME_None) const;
+	RECALLGRIDSELECTION_API float GetGridCellSize(const FName& GridName = NAME_None) const;
 	RECALLGRIDSELECTION_API FVector GetGridOrigin(const FName& GridName = NAME_None) const;
 	
 	// Grid coordinate conversion utilities
@@ -70,6 +69,8 @@ public:
 	// UWorldSubsystem implementation End
 	
 	// IRecallSimulationReactSystemInterface implementation Begin
+	virtual int32 GetStartOrderPriority() const override final { return Recall::SimReactSystem::StartOrder::HighPriority; }
+	virtual void Start(const FRecallSimulationStartParams& Params) override final;
 	virtual void Reset() override final;
 	virtual void Save(const FRecallSnapshotContext& Context, FInstancedStruct& OutSnapshot) override final;
 	virtual void Restore(const FRecallSnapshotContext& Context, const FInstancedStruct& InSnapshot) override final;
@@ -77,9 +78,10 @@ public:
 
 private:
 	UPROPERTY(Transient)
-	FRecallGridRegistry GridRegistry;
+	TMap<FName, FRecallGridRuntimeData> GridMap;
+
 	UPROPERTY(Transient)
-	TMap<FName, TObjectPtr<ARecallGridActor>> GridActorMap;
+	TMap<FName, TObjectPtr<ARecallGridActor>> StaticGridActorMap;
 };
 
 template<>

@@ -11,6 +11,8 @@
 
 #include "RecallGridRegistry.generated.h"
 
+class ARecallGridActor;
+
 USTRUCT()
 struct RECALLGRIDSELECTION_API FRecallGridCellEntry
 {
@@ -43,4 +45,53 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere)
 	int32 CellSerialNumberGenerator = 0;
+};
+
+/** Immutable geometry/configuration for a grid. */
+USTRUCT()
+struct RECALLGRIDSELECTION_API FRecallGridDefinition
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int32 GridSizeX = 0;
+
+	UPROPERTY()
+	int32 GridSizeY = 0;
+
+	UPROPERTY()
+	float CellSize = 0.0f;
+
+	UPROPERTY()
+	FTransform GridTransform = FTransform::Identity;
+
+	static FRecallGridDefinition FromGridActor(const ARecallGridActor& GridActor);
+	bool IsValid() const;
+	int32 GetGridCellIndex(int32 PosX, int32 PosY) const;
+	int32 GetGridCellIndexFromWorldPosition(const FVector& WorldPosition) const;
+	int32 GetGridCenterCellIndex() const;
+	FVector GetGridPosition(int32 CellIndex) const;
+};
+
+/** Runtime grid state: geometry and rollbackable cell occupancy/reservations. */
+USTRUCT()
+struct RECALLGRIDSELECTION_API FRecallGridRuntimeData
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FRecallGridDefinition Definition;
+
+	UPROPERTY()
+	FRecallGridRegistry Registry;
+};
+
+/** Snapshot payload for the runtime grid map. */
+USTRUCT()
+struct RECALLGRIDSELECTION_API FRecallGridSelectionSnapshot
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	TMap<FName, FRecallGridRuntimeData> Grids;
 };
