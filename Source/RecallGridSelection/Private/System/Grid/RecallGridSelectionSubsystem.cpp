@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Van de Walle Bastien
+﻿// Copyright (C) 2024 Van de Walle Bastien
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -8,6 +8,7 @@
 #include "System/Grid/RecallGridSelectionSubsystem.h"
 
 #include "Actor/RecallGridActor.h"
+#include "Async/Async.h"
 #include "Utility/Simulation/RecallSimulationUtils.h"
 
 void URecallGridSelectionSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -22,33 +23,26 @@ void URecallGridSelectionSubsystem::Deinitialize()
 
 void URecallGridSelectionSubsystem::Start(const FRecallSimulationStartParams& Params)
 {
-	for (const TPair<FName, TObjectPtr<ARecallGridActor>>& Pair : StaticGridActorMap)
+}
+
+void URecallGridSelectionSubsystem::Reset()
+{
+	GridMap.Reset();
+	
+	for (const TPair<FName, FRecallGridDefinition>& Pair : DefaultStaticGridMap)
 	{
-		ARecallGridActor* GridActor = Pair.Value;
+		ARecallGridActor* GridActor = StaticGridActorMap.FindRef(Pair.Key);
 		if (!ensureMsgf(IsValid(GridActor),
 			TEXT("%hs Static grid actor is invalid for GridName: %s"), __FUNCTION__, *Pair.Key.ToString()))
 		{
 			continue;
 		}
 
-		const FRecallGridDefinition GridDefinition = FRecallGridDefinition::FromGridActor(*GridActor);
-
-		if (!ensureMsgf(GridDefinition.IsValid(),
-			TEXT("%hs Static grid actor has an invalid grid definition for GridName: %s"), __FUNCTION__, *Pair.Key.ToString()))
-		{
-			continue;
-		}
-
-		if (AddGrid(Pair.Key, GridDefinition))
+		if (AddGrid(Pair.Key, Pair.Value))
 		{
 			OnGridActorRegistered.Broadcast(GridActor, Pair.Key);
 		}
 	}
-}
-
-void URecallGridSelectionSubsystem::Reset()
-{
-	GridMap.Reset();
 }
 
 void URecallGridSelectionSubsystem::Save(const FRecallSnapshotContext& Context, FInstancedStruct& OutSnapshot)
@@ -90,7 +84,20 @@ void URecallGridSelectionSubsystem::RegisterGridActor(ARecallGridActor* GridActo
 		return;
 	}
 
+	const FRecallGridDefinition GridDefinition = FRecallGridDefinition::FromGridActor(*GridActor);
+	if (!ensureAlwaysMsgf(GridDefinition.IsValid(),
+		TEXT("%hs Static grid actor has an invalid grid definition for GridName: %s"), __FUNCTION__, *GridName.ToString()))
+	{
+		return;
+	}
+
 	StaticGridActorMap.Add(GridName, GridActor);
+	DefaultStaticGridMap.Add(GridName, GridDefinition);
+
+	if (AddGrid(GridName, GridDefinition))
+	{
+		OnGridActorRegistered.Broadcast(GridActor, GridName);
+	}
 }
 
 bool URecallGridSelectionSubsystem::AddGrid(const FName& GridName, const FRecallGridDefinition& GridDefinition)
@@ -115,6 +122,39 @@ bool URecallGridSelectionSubsystem::AddGrid(const FName& GridName, const FRecall
 bool URecallGridSelectionSubsystem::RemoveGrid(const FName& GridName)
 {
 	return GridMap.Remove(GridName) > 0;
+}
+
+bool URecallGridSelectionSubsystem::SetGridSize(int32 GridSizeX, int32 GridSizeY, const FName& GridName)
+{
+	if (!ensureMsgf(GridSizeX > 0 && GridSizeY > 0,
+		TEXT("%hs Grid size must be positive"), __FUNCTION__))
+	{
+		return false;
+	}
+
+	FRecallGridRuntimeData* GridData = GridMap.Find(GridName);
+	if (!ensureMsgf(GridData,
+		TEXT("%hs Grid is not registered with GridName: %s"), __FUNCTION__, *GridName.ToString()))
+	{
+		return false;
+	}
+
+	GridData->Definition.GridSizeX = GridSizeX;
+	GridData->Definition.GridSizeY = GridSizeY;
+	
+	TWeakObjectPtr<URecallGridSelectionSubsystem> WeakThis(this);
+	AsyncTask(ENamedThreads::GameThread, [WeakThis, GridSizeX, GridSizeY, GridName]()
+	{
+		if (WeakThis.IsValid())
+		{
+			if (ARecallGridActor* GridActor = WeakThis->StaticGridActorMap.FindRef(GridName))
+			{
+				GridActor->SetGridSize(GridSizeX, GridSizeY);
+			}
+		}
+	});
+
+	return true;
 }
 
 int32 URecallGridSelectionSubsystem::GetDefaultGridCellIndex(const FName& GridName) const

@@ -6,11 +6,28 @@
 
 #pragma once
 
+#include "MassProcessor.h"
 #include "MassObserverProcessor.h"
 
 #include "MassEntityQuery.h"
 
 #include "RecallGridObstacleProcessors.generated.h"
+
+UCLASS()
+class URecallGridObstacleRegisterProcessor : public UMassProcessor
+{
+	GENERATED_BODY()
+
+public:
+	URecallGridObstacleRegisterProcessor();
+
+protected:
+	virtual void ConfigureQueries(const TSharedRef<FMassEntityManager>& EntityManager) override final;
+	virtual void Execute(FMassEntityManager& EntityManager, FMassExecutionContext& Context) override final;
+
+private:
+	FMassEntityQuery EntityQuery;
+};
 
 UCLASS()
 class URecallGridObstacleDeinitializer : public UMassObserverProcessor

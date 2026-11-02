@@ -37,6 +37,7 @@ public:
 	bool IsEmptyCell(int32 CellIndex) const;
 	FMassEntityHandle GetCellEntity(int32 CellIndex) const;
 	int32 GetCellReservationNumber(int32 CellIndex) const;
+	bool IsEmpty() const;
 	void ResetGrid();
 	
 protected:

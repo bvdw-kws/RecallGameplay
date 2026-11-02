@@ -18,3 +18,9 @@ struct RECALLGRIDSELECTION_API FRecallGridObstacleFragment : public FMassFragmen
 	UPROPERTY(VisibleAnywhere)
 	int32 GridCellIndex = INDEX_NONE;
 };
+
+USTRUCT()
+struct RECALLGRIDSELECTION_API FRecallGridObstacleRegisteredTag : public FMassTag
+{
+	GENERATED_BODY()
+};

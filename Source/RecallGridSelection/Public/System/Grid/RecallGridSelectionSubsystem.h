@@ -28,8 +28,10 @@ public:
 	void RegisterGridActor(ARecallGridActor* GridActor, const FName& GridName = NAME_None);
 	RECALLGRIDSELECTION_API bool AddGrid(const FName& GridName, const FRecallGridDefinition& GridDefinition);
 	RECALLGRIDSELECTION_API bool RemoveGrid(const FName& GridName);
+	// Dimensions may only change while the grid has no registered or reserved cells.
+	RECALLGRIDSELECTION_API bool SetGridSize(int32 GridSizeX, int32 GridSizeY, const FName& GridName = NAME_None);
 
-	// Broadcast from Start after the static actor's grid has been copied into the runtime grid map.
+	// Broadcast after a static grid is registered or resized so listeners can refresh dependent data.
 	FOnRecallGridActorRegistered OnGridActorRegistered;
 
 	RECALLGRIDSELECTION_API int32 GetDefaultGridCellIndex(const FName& GridName = NAME_None) const;
@@ -79,6 +81,9 @@ public:
 private:
 	UPROPERTY(Transient)
 	TMap<FName, FRecallGridRuntimeData> GridMap;
+
+	UPROPERTY(Transient)
+	TMap<FName, FRecallGridDefinition> DefaultStaticGridMap;
 
 	UPROPERTY(Transient)
 	TMap<FName, TObjectPtr<ARecallGridActor>> StaticGridActorMap;

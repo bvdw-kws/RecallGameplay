@@ -9,10 +9,34 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "RecallGameplayEffectTypes.h"
+#include "Templates/SubclassOf.h"
+#include "UObject/SoftObjectPtr.h"
 
 #include "RecallGameplayEffect.generated.h"
 
 class URecallAttributeMod;
+
+/**
+ * Gameplay cues associated with a Recall gameplay effect.
+ * Persistent effects add these cues while active; instant effects execute them once.
+ */
+USTRUCT(BlueprintType)
+struct RECALLGAMEPLAYEFFECTMODULE_API FRecallGameplayEffectCue
+{
+	GENERATED_BODY()
+
+	/** Tags sent to the Gameplay Cue handler for this cue entry. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=GameplayCue, meta=(Categories="GameplayCue"))
+	FGameplayTagContainer GameplayCueTags;
+
+	/** Fixed normalized magnitude supplied to the Gameplay Cue handler. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=GameplayCue, meta=(ClampMin="0.0", ClampMax="1.0"))
+	float NormalizedMagnitude = 1.0f;
+
+	/** Fixed raw magnitude supplied to the Gameplay Cue handler. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=GameplayCue)
+	float RawMagnitude = 0.0f;
+};
 
 /**
  * Gameplay effect that can be applied to an entity.
@@ -52,6 +76,10 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, Category=Effect)
 	FGameplayTagContainer GameplayTagsToAdd;
+
+	/** Cues to activate while this effect is active, or execute once for instant effects. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=GameplayCues)
+	TArray<FRecallGameplayEffectCue> GameplayCues;
 
 	/**
 	 * Attribute modifiers to apply while this effect is active.

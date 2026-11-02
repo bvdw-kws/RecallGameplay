@@ -25,6 +25,7 @@ public class RecallGameplayEffectModule : ModuleRules
 			"RecallSimulation",
 			"RecallGameplayCore",
 			"RecallGameplay",
+			"RecallGameplayCueModule",
 			"RecallAttributeModule",
 			"RecallPhysicsModule",
 			"RecallSignals",

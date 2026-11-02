@@ -69,6 +69,11 @@ int32 FRecallGridRegistry::GetCellReservationNumber(int32 CellIndex) const
 	return 0;
 }
 
+bool FRecallGridRegistry::IsEmpty() const
+{
+	return Cells.IsEmpty();
+}
+
 void FRecallGridRegistry::ResetGrid()
 {
 	Cells.Reset();

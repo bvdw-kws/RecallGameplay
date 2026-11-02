@@ -11,7 +11,6 @@
 #include "MassEntityManager.h"
 #include "MassEntityView.h"
 #include "Simulation/GameplayTag/RecallGameplayTagFragments.h"
-#include "Simulation/Grid/RecallGridObstacleFragments.h"
 #include "System/Grid/RecallGridSelectionSubsystem.h"
 #include "Utility/GameplayTag/RecallGameplayTagUtils.h"
 
@@ -59,17 +58,6 @@ void FRecallGridDeviceSpawnCommand::OnSpawn(FMassEntityManager& System,
 			{
 				GameplayTagFragmentPtr->GameplayTagCountMap.AddTag(DeviceTag);
 			}
-		}
-
-		if (GridCellIndex != INDEX_NONE)
-		{
-			auto* ObstacleFragmentPtr = EntityView.GetFragmentDataPtr<FRecallGridObstacleFragment>();
-			if (ensure(ObstacleFragmentPtr))
-			{
-				ObstacleFragmentPtr->GridCellIndex = GridCellIndex;
-			}
-
-			GridSelectionSystem->RegisterCell(GridCellIndex, Entity);
 		}
 	}
 	else

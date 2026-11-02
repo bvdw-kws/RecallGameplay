@@ -32,6 +32,8 @@ public:
 	int32 GetTotalCellCount() const { return GridSizeX * GridSizeY; }
 	float GetGridCellSize() const { return CellSize; }
 	
+	void SetGridSize(int32 NewGridSizeX, int32 NewGridSizeY);
+	
 	//~ Begin AActor Interface
 protected:
 	virtual void OnConstruction(const FTransform& Transform) override;
@@ -55,4 +57,5 @@ protected:
 	TArray<TObjectPtr<UChildActorComponent>> ChildActorComponents;
 
 	void SpawnGridCells();
+	void UpdateGridCells();
 };

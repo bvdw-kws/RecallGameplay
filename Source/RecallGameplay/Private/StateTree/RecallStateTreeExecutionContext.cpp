@@ -199,6 +199,6 @@ void FRecallStateTreeExecutionContext::BeginDelayedTransition(const FStateTreeTr
 	if (SignalSubsystem != nullptr && Entity.IsSet())
 	{
 		// Tick again after the games time has passed to see if the condition still holds true.
-		SignalSubsystem->DelaySignalEntity(Recall::StateTree::Signals::DelayedTransitionWakeup, Entity, DelayedState.TimeLeft + KINDA_SMALL_NUMBER);
+		SignalSubsystem->DelaySignalEntity(Recall::StateTree::Signals::DelayedTransitionWakeup, Entity, DelayedState.TimeLeft + UE_KINDA_SMALL_NUMBER);
 	}
 }

@@ -11,10 +11,12 @@
 #include "RecallGameplayEffectContext.h"
 #include "RecallGameplayEffectHandle.h"
 #include "RecallGameplayEffectInstance.h"
+#include "Templates/SubclassOf.h"
 
 #include "RecallGameplayEffectContainer.generated.h"
 
 struct FGameplayTag;
+struct FMassEntityView;
 struct FRecallGameplayEffectContext;
 
 USTRUCT()
@@ -66,6 +68,9 @@ protected:
 protected:
 	virtual void AddEffect_Internal(const FRecallGameplayEffectContext& Context,
 		const URecallGameplayEffect& EffectCDO, FRecallGameplayEffectInstance* Instance) const;
+	void AddGameplayCue_Internal(const FRecallGameplayEffectContext& Context,
+		const URecallGameplayEffect& EffectCDO, const FMassEntityView& OwnerView,
+		FRecallGameplayEffectInstance* Instance, bool bInstant) const;
 	virtual void RemoveEffect_Internal(const FRecallGameplayEffectContext& Context, const FRecallGameplayEffectInstance& Instance) const;
 
 private:

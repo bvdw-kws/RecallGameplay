@@ -28,29 +28,26 @@ void ARecallGridActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	for (int32 Y = 0; Y < GridSizeY; ++Y)
-	{
-		for (int32 X = 0; X < GridSizeX; ++X)
-		{
-			const int32 Index = GetGridCellIndex(X, Y);
-			TObjectPtr<UChildActorComponent>& Component = ChildActorComponents[Index];
-			if (!ensure(Component))
-			{
-				continue;
-			}
-			
-			if (ARecallGridCellActor* ChildActor = Cast<ARecallGridCellActor>(Component->GetChildActor()))
-			{
-				ChildActor->SetCellCoordinates(X, Y);
-				ChildActor->SetCellSize(CellSize, CellSize);
-			}
-		}
-	}
+	UpdateGridCells();
 	
 	if (auto* GridSelectionSystem = UWorld::GetSubsystem<URecallGridSelectionSubsystem>(GetWorld()))
 	{
 		GridSelectionSystem->RegisterGridActor(this);
 	}
+}
+
+void ARecallGridActor::SetGridSize(int32 NewGridSizeX, int32 NewGridSizeY)
+{
+	if (GridSizeX == NewGridSizeX && GridSizeY == NewGridSizeY)
+	{
+		return;
+	}
+	
+	GridSizeX = FMath::Max(1, NewGridSizeX);
+	GridSizeY = FMath::Max(1, NewGridSizeY);
+	
+	SpawnGridCells();
+	UpdateGridCells();
 }
 
 void ARecallGridActor::SpawnGridCells()
@@ -97,6 +94,28 @@ void ARecallGridActor::SpawnGridCells()
 
 			if (ARecallGridCellActor* ChildActor = Cast<ARecallGridCellActor>(Component->GetChildActor()))
 			{
+				ChildActor->SetCellSize(CellSize, CellSize);
+			}
+		}
+	}
+}
+
+void ARecallGridActor::UpdateGridCells()
+{
+	for (int32 Y = 0; Y < GridSizeY; ++Y)
+	{
+		for (int32 X = 0; X < GridSizeX; ++X)
+		{
+			const int32 Index = GetGridCellIndex(X, Y);
+			TObjectPtr<UChildActorComponent>& Component = ChildActorComponents[Index];
+			if (!ensure(Component))
+			{
+				continue;
+			}
+			
+			if (ARecallGridCellActor* ChildActor = Cast<ARecallGridCellActor>(Component->GetChildActor()))
+			{
+				ChildActor->SetCellCoordinates(X, Y);
 				ChildActor->SetCellSize(CellSize, CellSize);
 			}
 		}

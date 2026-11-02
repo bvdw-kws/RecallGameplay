@@ -7,6 +7,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
+#include "System/Actor/RecallActorTypes.h"
+#include "Templates/SubclassOf.h"
 
 #include "RecallGameplayEffectInstance.generated.h"
 
@@ -40,4 +43,16 @@ struct RECALLGAMEPLAYEFFECTMODULE_API FRecallGameplayEffectInstance
 	 */
 	UPROPERTY(VisibleAnywhere)
 	TArray<uint32> AttributeModHandles;
+
+	/** Representation that received this effect's persistent cues. */
+	UPROPERTY(VisibleAnywhere)
+	FRecallActorHandle GameplayCueTargetActorHandle;
+
+	/** Stable IDs used to remove the exact cue contributions created by this instance. */
+	UPROPERTY(VisibleAnywhere)
+	TArray<uint64> GameplayCueInstanceIds;
+
+	/** Cue tags counted on the target while this effect instance is active. */
+	UPROPERTY(VisibleAnywhere)
+	TArray<FGameplayTag> GameplayCueTags;
 };

@@ -10,8 +10,12 @@
 #include "MassEntityView.h"
 #include "RecallGameplayEffect.h"
 #include "RecallGameplayEffectContext.h"
+#include "Engine/World.h"
+#include "MassEntityManager.h"
 #include "Simulation/Attribute/RecallAttributeFragments.h"
 #include "Simulation/GameplayTag/RecallGameplayTagFragments.h"
+#include "Simulation/Representation/RecallActorRepresentationFragments.h"
+#include "System/RecallGameplayCueSubsystem.h"
 
 void FRecallGameplayEffectContainer::Initialize(const FMassEntityHandle& InOwnerEntity)
 {
@@ -238,11 +242,117 @@ void FRecallGameplayEffectContainer::AddEffect_Internal(const FRecallGameplayEff
 			}
 		}
 	}
+
+	AddGameplayCue_Internal(Context, EffectCDO, OwnerView, Instance, bInstant);
+}
+
+void FRecallGameplayEffectContainer::AddGameplayCue_Internal(const FRecallGameplayEffectContext& Context,
+	const URecallGameplayEffect& EffectCDO, const FMassEntityView& OwnerView,
+	FRecallGameplayEffectInstance* Instance, bool bInstant) const
+{
+	if (EffectCDO.GameplayCues.IsEmpty())
+	{
+		return;
+	}
+
+	// Persistent cue tags are also owned tags, matching GAS's active cue tag behavior.
+	if (!bInstant && Instance != nullptr)
+	{
+		if (FRecallGameplayTagFragment* GameplayTagFragmentPtr =
+			OwnerView.GetFragmentDataPtr<FRecallGameplayTagFragment>())
+		{
+			for (const FRecallGameplayEffectCue& EffectCue : EffectCDO.GameplayCues)
+			{
+				GameplayTagFragmentPtr->GameplayTagCountMap.AddTags(EffectCue.GameplayCueTags);
+				Instance->GameplayCueTags.Append(EffectCue.GameplayCueTags.GetGameplayTagArray());
+			}
+		}
+	}
+
+	URecallGameplayCueSubsystem* GameplayCueSubsystem = UWorld::GetSubsystem<URecallGameplayCueSubsystem>(Context.EntityManager.GetWorld());
+	if (!IsValid(GameplayCueSubsystem))
+	{
+		return;
+	}
+
+	const FRecallActorRepresentationFragment* TargetRepresentationFragment =
+		OwnerView.GetFragmentDataPtr<FRecallActorRepresentationFragment>();
+	const FRecallActorHandle TargetActorHandle = TargetRepresentationFragment
+		? TargetRepresentationFragment->ActorHandle
+		: FRecallActorHandle::Invalid();
+
+	FRecallGameplayCueParameters BaseCueParameters;
+	
+	const FMassEntityView InstigatorView(Context.EntityManager, Context.OwnerEntity);
+	if (InstigatorView.IsValid())
+	{
+		if (const FRecallGameplayTagFragment* InstigatorTags =
+			InstigatorView.GetFragmentDataPtr<FRecallGameplayTagFragment>())
+		{
+			BaseCueParameters.AggregatedSourceTags = InstigatorTags->GameplayTagCountMap.GetTags();
+		}
+		if (const FRecallActorRepresentationFragment* InstigatorRepresentation =
+			InstigatorView.GetFragmentDataPtr<FRecallActorRepresentationFragment>())
+		{
+			BaseCueParameters.InstigatorActorHandle = InstigatorRepresentation->ActorHandle;
+			// Recall currently has a single source entity in its effect context, so use it as the effect causer too.
+			BaseCueParameters.EffectCauserActorHandle = BaseCueParameters.InstigatorActorHandle;
+		}
+	}
+	
+	if (const FRecallGameplayTagFragment* TargetTags =
+		OwnerView.GetFragmentDataPtr<FRecallGameplayTagFragment>())
+	{
+		BaseCueParameters.AggregatedTargetTags = TargetTags->GameplayTagCountMap.GetTags();
+	}
+
+	if (!bInstant && Instance != nullptr)
+	{
+		Instance->GameplayCueTargetActorHandle = TargetActorHandle;
+	}
+
+	for (const FRecallGameplayEffectCue& EffectCue : EffectCDO.GameplayCues)
+	{
+		FRecallGameplayCueParameters CueParameters = BaseCueParameters;
+		CueParameters.NormalizedMagnitude = EffectCue.NormalizedMagnitude;
+		CueParameters.RawMagnitude = EffectCue.RawMagnitude;
+
+		for (const FGameplayTag& CueTag : EffectCue.GameplayCueTags)
+		{
+			if (bInstant)
+			{
+				GameplayCueSubsystem->ExecuteCue(TargetActorHandle, CueTag, CueParameters);
+			}
+			else if (Instance != nullptr)
+			{
+				const uint64 CueInstanceId = GameplayCueSubsystem->AddCue(TargetActorHandle, CueTag, CueParameters);
+				if (CueInstanceId != 0)
+				{
+					Instance->GameplayCueInstanceIds.Add(CueInstanceId);
+				}
+			}
+		}
+	}
 }
 
 void FRecallGameplayEffectContainer::RemoveEffect_Internal(const FRecallGameplayEffectContext& Context,
 	const FRecallGameplayEffectInstance& Instance) const
 {
+	if (Instance.GameplayCueTargetActorHandle.IsSet() && !Instance.GameplayCueInstanceIds.IsEmpty())
+	{
+		if (UWorld* World = Context.EntityManager.GetWorld())
+		{
+			if (URecallGameplayCueSubsystem* GameplayCueSubsystem =
+				UWorld::GetSubsystem<URecallGameplayCueSubsystem>(World))
+			{
+				for (const uint64 CueInstanceId : Instance.GameplayCueInstanceIds)
+				{
+					GameplayCueSubsystem->RemoveCue(Instance.GameplayCueTargetActorHandle, CueInstanceId);
+				}
+			}
+		}
+	}
+
 	const FMassEntityView OwnerView(Context.EntityManager, OwnerEntity);
 	if (!OwnerView.IsValid())
 	{
@@ -256,6 +366,17 @@ void FRecallGameplayEffectContainer::RemoveEffect_Internal(const FRecallGameplay
 		if (auto* GameplayTagFragmentPtr = OwnerView.GetFragmentDataPtr<FRecallGameplayTagFragment>())
 		{
 			GameplayTagFragmentPtr->GameplayTagCountMap.RemoveTags(EffectCDO->GameplayTagsToAdd);
+		}
+	}
+
+	if (!Instance.GameplayCueTags.IsEmpty())
+	{
+		if (auto* GameplayTagFragmentPtr = OwnerView.GetFragmentDataPtr<FRecallGameplayTagFragment>())
+		{
+			for (const FGameplayTag& CueTag : Instance.GameplayCueTags)
+			{
+				GameplayTagFragmentPtr->GameplayTagCountMap.RemoveTag(CueTag);
+			}
 		}
 	}
 	
