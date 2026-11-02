@@ -19,6 +19,7 @@
 #include "Simulation/Physics/RecallPhysicsBodyFragment.h"
 #include "Simulation/Physics/RecallPhysicsCharacterFragments.h"
 #include "Simulation/Representation/RecallActorRepresentationFragments.h"
+#include "Simulation/Representation/RecallActorRepresentationProcessorGroups.h"
 #include "Simulation/Transform/RecallTransformFragments.h"
 #include "System/Actor/RecallActorSubsystem.h"
 #include "System/Physics/RecallPhysicsSubsystem.h"
@@ -135,7 +136,10 @@ void URecallActorRepresentationDeinitializer::Execute(FMassEntityManager& Entity
 	});
 }
 
-static const FName RecallActorRepresentation = TEXT("RecallActorRepresentation");
+namespace Recall::Gameplay::ProcessorGroupNames
+{
+	const FName ActorRepresentation = TEXT("RecallActorRepresentation");
+}
 
 //----------------------------------------------------------------------//
 // URecallActorRepresentationProcessor
@@ -145,7 +149,7 @@ URecallActorRepresentationProcessor::URecallActorRepresentationProcessor()
 {
 	ExecutionFlags = static_cast<int32>(EProcessorExecutionFlags::All);
 	ProcessingPhase = EMassProcessingPhase::Render;
-	ExecutionOrder.ExecuteInGroup = RecallActorRepresentation;
+	ExecutionOrder.ExecuteInGroup = Recall::Gameplay::ProcessorGroupNames::ActorRepresentation;
 	bRequiresGameThreadExecution = true;
 }
 
@@ -225,7 +229,7 @@ URecallControllerActorRepresentationProcessor::URecallControllerActorRepresentat
 {
 	ExecutionFlags = static_cast<int32>(EProcessorExecutionFlags::All);
 	ProcessingPhase = EMassProcessingPhase::Render;
-	ExecutionOrder.ExecuteAfter.Add(RecallActorRepresentation);
+	ExecutionOrder.ExecuteAfter.Add(Recall::Gameplay::ProcessorGroupNames::ActorRepresentation);
 	bRequiresGameThreadExecution = true;
 }
 
