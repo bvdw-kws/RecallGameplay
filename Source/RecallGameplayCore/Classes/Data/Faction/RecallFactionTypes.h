@@ -109,11 +109,12 @@ RECALLGAMEPLAYCORE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Faction_Team96);
 RECALLGAMEPLAYCORE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Faction_Team97);
 RECALLGAMEPLAYCORE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Faction_Team98);
 RECALLGAMEPLAYCORE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Faction_Team99);
+RECALLGAMEPLAYCORE_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Faction_Team100);
 
 namespace Recall::Faction
 {
 	/** Number of Faction.TeamN tags that are defined. */
-	inline constexpr int32 MaxFactionCount = 99;
+	inline constexpr int32 MaxFactionCount = 100;
 
 	/** Faction tag for a zero-based index (0 => Faction.Team1). Returns an empty tag if out of range. */
 	RECALLGAMEPLAYCORE_API FGameplayTag GetFactionTagByIndex(int32 FactionIndex);

@@ -108,6 +108,7 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(Faction_Team96,	"Faction.Team96",		"Team 96 Facti
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(Faction_Team97,	"Faction.Team97",		"Team 97 Faction");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(Faction_Team98,	"Faction.Team98",		"Team 98 Faction");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(Faction_Team99,	"Faction.Team99",		"Team 99 Faction");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Faction_Team100,	"Faction.Team100",		"Team 100 Faction");
 
 namespace Recall::Faction
 {
@@ -215,6 +216,7 @@ FGameplayTag GetFactionTagByIndex(int32 FactionIndex)
 		Faction_Team97,
 		Faction_Team98,
 		Faction_Team99,
+		Faction_Team100,
 	};
 
 	static_assert(UE_ARRAY_COUNT(FactionTags) == MaxFactionCount);
