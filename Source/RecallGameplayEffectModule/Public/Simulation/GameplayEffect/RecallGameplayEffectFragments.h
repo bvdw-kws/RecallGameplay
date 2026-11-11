@@ -9,8 +9,11 @@
 #include "Mass/EntityElementTypes.h"
 #include "MassEntityTypes.h"
 #include "Gameplay/RecallGameplayEffectContainer.h"
+#include "Templates/SubclassOf.h"
 
 #include "RecallGameplayEffectFragments.generated.h"
+
+class URecallGameplayEffect;
 
 /**
  * Allows an entity to hold gameplay effects.
@@ -28,6 +31,16 @@ public:
 template <>
 struct TMassFragmentTraits<FRecallGameplayEffectFragment> final
 { enum { AuthorAcceptsItsNotTriviallyCopyable = true }; };
+
+/** Gameplay effects configured as defaults for entities using the gameplay effect trait. */
+USTRUCT()
+struct RECALLGAMEPLAYEFFECTMODULE_API FRecallGameplayEffectConstSharedFragment : public FMassConstSharedFragment
+{
+	GENERATED_BODY()
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<TSubclassOf<URecallGameplayEffect>> DefaultEffects;
+};
 
 USTRUCT()
 struct RECALLGAMEPLAYEFFECTMODULE_API FRecallGameplayEffectAreaInstance

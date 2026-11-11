@@ -9,6 +9,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Collection/VariableCollectionTypes.h"
+#include "Templates/SubclassOf.h"
 
 #include "RecallAttributeModOperationTypes.generated.h"
 

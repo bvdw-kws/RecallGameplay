@@ -9,7 +9,7 @@
 
 #include "MassEntityTemplateRegistry.h"
 #include "Simulation/GameplayEffect/RecallGameplayEffectFragments.h"
-#include "Simulation/Physics/RecallPhysicsBodyFragment.h"
+#include "Simulation/Physics/RecallPhysicsSensorFragment.h"
 #include "Simulation/Transform/RecallTransformFragments.h"
 
 //----------------------------------------------------------------------//
@@ -17,7 +17,13 @@
 //----------------------------------------------------------------------//
 void URecallGameplayEffectTrait::BuildTemplate(FMassEntityTemplateBuildContext& BuildContext, const UWorld& World) const
 {
+	FMassEntityManager& EntityManager = UE::Mass::Utils::GetEntityManagerChecked(World);
+
 	BuildContext.AddFragment<FRecallGameplayEffectFragment>();
+
+	FRecallGameplayEffectConstSharedFragment SharedFragment;
+	SharedFragment.DefaultEffects = DefaultEffects;
+	BuildContext.AddConstSharedFragment(EntityManager.GetOrCreateConstSharedFragment(SharedFragment));
 }
 
 //----------------------------------------------------------------------//

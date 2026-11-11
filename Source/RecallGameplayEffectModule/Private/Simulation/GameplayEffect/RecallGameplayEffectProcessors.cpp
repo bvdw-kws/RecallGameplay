@@ -30,13 +30,17 @@ void URecallGameplayEffectInitializer::InitializeInternal(UObject& Owner, const 
 void URecallGameplayEffectInitializer::ConfigureQueries(const TSharedRef<FMassEntityManager>& EntityManager)
 {
 	EntityQuery.AddRequirement<FRecallGameplayEffectFragment>(EMassFragmentAccess::ReadWrite);
+	EntityQuery.AddConstSharedRequirement<FRecallGameplayEffectConstSharedFragment>();
 }
 
 void URecallGameplayEffectInitializer::Execute(FMassEntityManager& EntityManager, FMassExecutionContext& Context)
 {
 	EntityQuery.ForEachEntityChunk(Context, [](FMassExecutionContext& Context)
 	{
+		const FRecallGameplayEffectConstSharedFragment& SharedFragment =
+			Context.GetConstSharedFragment<FRecallGameplayEffectConstSharedFragment>();
 		const TArrayView<FRecallGameplayEffectFragment> GameplayEffectList = Context.GetMutableFragmentView<FRecallGameplayEffectFragment>();
+		const FMassEntityManager& EntityManager = Context.GetEntityManagerChecked();
 
 		for (int32 EntityIndex = 0; EntityIndex < Context.GetNumEntities(); EntityIndex++)
 		{
@@ -44,6 +48,9 @@ void URecallGameplayEffectInitializer::Execute(FMassEntityManager& EntityManager
 			
 			FRecallGameplayEffectFragment& GameplayEffectFragment = GameplayEffectList[EntityIndex];
 			GameplayEffectFragment.Container.Initialize(Entity);
+
+			const FRecallGameplayEffectContext EffectContext{EntityManager, Entity};
+			GameplayEffectFragment.Container.AddEffects(EffectContext, SharedFragment.DefaultEffects);
 		}
 	});
 }

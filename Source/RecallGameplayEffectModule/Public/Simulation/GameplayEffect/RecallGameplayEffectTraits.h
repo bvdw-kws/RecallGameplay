@@ -7,8 +7,11 @@
 #pragma once
 
 #include "MassEntityTraitBase.h"
+#include "Templates/SubclassOf.h"
 
 #include "RecallGameplayEffectTraits.generated.h"
+
+class URecallGameplayEffect;
 
 UCLASS(meta=(DisplayName="RE Gameplay Effect"))
 class RECALLGAMEPLAYEFFECTMODULE_API URecallGameplayEffectTrait : public UMassEntityTraitBase
@@ -17,6 +20,11 @@ class RECALLGAMEPLAYEFFECTMODULE_API URecallGameplayEffectTrait : public UMassEn
 
 public:
 	virtual void BuildTemplate(FMassEntityTemplateBuildContext& BuildContext, const UWorld& World) const override;
+
+protected:
+	/** Gameplay effects to apply when an entity with this trait is initialized. */
+	UPROPERTY(EditAnywhere, Category=GameplayEffect)
+	TArray<TSubclassOf<URecallGameplayEffect>> DefaultEffects;
 };
 
 UCLASS(meta=(DisplayName="RE Gameplay Effect Area"))

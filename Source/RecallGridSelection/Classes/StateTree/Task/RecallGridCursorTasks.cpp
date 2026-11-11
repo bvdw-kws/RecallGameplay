@@ -141,7 +141,7 @@ EStateTreeRunStatus FRecallGridMoveCursorToTargetTask::Tick(FStateTreeExecutionC
 		*MassContext.GetEntity().DebugGetDescription(), CursorFragment->GridCellIndex, NextCellIndex, InstanceData.TargetGridCellIndex));
 #endif // RECALL_DESYNC_LOG
 
-	if (!ensure(NextCellIndex != INDEX_NONE))
+	if (NextCellIndex == INDEX_NONE)
 	{
 #if RECALL_DESYNC_LOG
 		RECALL_DESYNC_LOG_STR(Context.GetWorld(), MoveCursorToTarget_Failed, FString(TEXT("Invalid NextCellIndex")));

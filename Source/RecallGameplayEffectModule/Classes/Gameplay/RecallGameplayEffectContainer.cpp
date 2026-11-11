@@ -445,7 +445,7 @@ bool FRecallGameplayEffectContainer::TickEffect_Internal(float DeltaTime, ERecal
 	FRecallGameplayEffectInstance& Instance)
 {
 	const URecallGameplayEffect* EffectCDO = Instance.EffectClass.GetDefaultObject();
-	if (!ensure(EffectCDO) || EffectCDO->DurationPolicy != ERecallGameplayEffectDurationType::HasDuration)
+	if (!ensure(EffectCDO) || EffectCDO->DurationPolicy == ERecallGameplayEffectDurationType::Instant)
 	{
 		return true;
 	}
@@ -473,5 +473,10 @@ bool FRecallGameplayEffectContainer::TickEffect_Internal(float DeltaTime, ERecal
 
 	Instance.TimeSeconds += DeltaTime;
 
+	if (EffectCDO->DurationPolicy == ERecallGameplayEffectDurationType::Infinite)
+	{
+		return false;
+	}
+	
 	return Instance.TimeSeconds >= EffectCDO->Duration && !FMath::IsNearlyZero(EffectCDO->Duration);
 }
