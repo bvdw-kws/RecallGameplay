@@ -7,6 +7,7 @@
 #pragma once
 
 #include "ExtendedCommonUserWidget.h"
+#include "Mass/EntityHandle.h"
 #include "Observer/Representation/RecallRepresentationReactInterface.h"
 
 #include "RecallPlayerPartyWidget.generated.h"
@@ -62,6 +63,12 @@ protected:
 	TObjectPtr<URecallPlayerCardWidget> PlayerCard_8;
 
 	void UpdatePartyCards();
+
+	/**
+	 * Called once the party entities are gathered and before they are assigned to the cards.
+	 * Override to reorder the entities, only the first MS_PLAYER_PARTY_CARD_COUNT ones are displayed.
+	 */
+	virtual void SortPartyPlayerEntities(TArray<FMassEntityHandle>& PlayerEntities) const {}
 
 	TObjectPtr<URecallPlayerCardWidget> GetPlayerCard(int32 PlayerIndex) const;
 };

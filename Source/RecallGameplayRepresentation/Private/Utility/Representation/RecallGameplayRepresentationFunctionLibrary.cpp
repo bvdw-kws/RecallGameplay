@@ -164,6 +164,12 @@ FGameplayTagContainer URecallGameplayRepresentationFunctionLibrary::GetFactionGa
 	return Recall::GameplayTag::Utils::GetFactionTags(GetGameplayTagsByControllerID(WorldContextObject, PlayerID));
 }
 
+FGameplayTagContainer URecallGameplayRepresentationFunctionLibrary::GetFactionGameplayTagsByEntity(
+	const UObject* WorldContextObject, const FMassEntityHandle& Entity)
+{
+	return Recall::GameplayTag::Utils::GetFactionTags(GetGameplayTagsByEntity(WorldContextObject, Entity));
+}
+
 FMassEntityHandle URecallGameplayRepresentationFunctionLibrary::GetEntityByTags(
 	const UObject* WorldContextObject, const FGameplayTagContainer& Tags, TArray<FName> NameTags)
 {

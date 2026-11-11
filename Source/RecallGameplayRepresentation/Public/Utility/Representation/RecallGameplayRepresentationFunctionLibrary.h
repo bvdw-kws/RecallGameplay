@@ -33,6 +33,7 @@ public:
 	static FGameplayTagContainer GetSubGameplayTagsByControllerID(const UObject* WorldContextObject, const FGameplayTag& Tag, const FString& ControllerId);
 	static FGameplayTagContainer GetSubGameplayTagsByEntity(const UObject* WorldContextObject, const FGameplayTag& Tag, const FMassEntityHandle& Entity);
 	static FGameplayTagContainer GetFactionGameplayTags(const UObject* WorldContextObject, int32 PlayerIndex);
+	static FGameplayTagContainer GetFactionGameplayTagsByEntity(const UObject* WorldContextObject, const FMassEntityHandle& Entity);
 
 	static FMassEntityHandle GetPlayerEntity(const UObject* WorldContextObject, const FString& PlayerID);
 	static FMassEntityHandle GetEntityByTags(const UObject* WorldContextObject,

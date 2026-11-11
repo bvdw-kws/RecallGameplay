@@ -47,7 +47,7 @@ void URecallPlayerPartyWidget::UpdatePartyCards()
 		return;
 	}
 
-	int32 PlayerCardIndex = 0;
+	TArray<FMassEntityHandle> PlayerEntities;
 
 	for (const APlayerState* PlayerState : GameState->PlayerArray)
 	{
@@ -64,6 +64,20 @@ void URecallPlayerPartyWidget::UpdatePartyCards()
 			PlayerId, PlayerEntity))
 		{
 			continue;
+		}
+
+		PlayerEntities.Add(PlayerEntity);
+	}
+
+	SortPartyPlayerEntities(PlayerEntities);
+
+	// More players than cards: only the first entities (after sorting) are displayed.
+	int32 PlayerCardIndex = 0;
+	for (const FMassEntityHandle& PlayerEntity : PlayerEntities)
+	{
+		if (PlayerCardIndex >= MS_PLAYER_PARTY_CARD_COUNT)
+		{
+			break;
 		}
 
 		const TObjectPtr<URecallPlayerCardWidget> PlayerCard = GetPlayerCard(

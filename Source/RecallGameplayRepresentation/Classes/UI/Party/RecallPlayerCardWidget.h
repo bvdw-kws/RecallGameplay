@@ -22,7 +22,7 @@ class RECALLGAMEPLAYREPRESENTATION_API URecallPlayerCardWidget :
 	GENERATED_UCLASS_BODY()
 
 public:
-	void SetPlayerEntity(const FMassEntityHandle& Entity);
+	virtual void SetPlayerEntity(const FMassEntityHandle& Entity);
 
 protected:
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidgetOptional))
