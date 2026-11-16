@@ -49,6 +49,10 @@ void FRecallDropItemEntitySpawnCommand::OnSpawn(FMassEntityManager& System,
 		if (MeshDescPtr != nullptr)
 		{
 			System.AddFragmentToEntity(Entity, FRecallActorRepresentationFragment::StaticStruct());
+
+			// The actor is created below from the item asset, there is no definition to respawn it from, so it can not be culled.
+			// The tag keeps its transform updated (see URecallActorRepresentationProcessor).
+			System.AddTagToEntity(Entity, FRecallRenderedTag::StaticStruct());
 		}
 		
 		const FMassEntityView EntityView(System, Entity);

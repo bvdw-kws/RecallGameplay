@@ -34,7 +34,8 @@ URecallActorRepresentationInitializer::URecallActorRepresentationInitializer()
 	: EntityQuery(*this)
 {
 	ExecutionFlags = static_cast<int32>(EProcessorExecutionFlags::All);
-	ObservedTypes.Add(FRecallActorRepresentationFragment::StaticStruct());
+	// The actor is only spawned once the entity is rendered, see URecallRenderedTagProcessor.
+	ObservedTypes.Add(FRecallRenderedTag::StaticStruct());
 	ObservedOperations = EMassObservedOperationFlags::Add;
 }
 
@@ -46,6 +47,7 @@ void URecallActorRepresentationInitializer::InitializeInternal(UObject& Owner, c
 void URecallActorRepresentationInitializer::ConfigureQueries(const TSharedRef<FMassEntityManager>& EntityManager)
 {
 	EntityQuery.AddRequirement<FRecallActorRepresentationFragment>(EMassFragmentAccess::ReadWrite);
+	EntityQuery.AddTagRequirement<FRecallCullableActorRepresentationTag>(EMassFragmentPresence::All);
 	EntityQuery.AddConstSharedRequirement<FRecallSkeletalMeshActorRepresentationConstSharedFragment>(EMassFragmentPresence::Optional);
 	EntityQuery.AddConstSharedRequirement<FRecallStaticMeshActorRepresentationConstSharedFragment>(EMassFragmentPresence::Optional);
 	EntityQuery.AddConstSharedRequirement<FRecallActorRepresentationConstSharedFragment>(EMassFragmentPresence::Optional);
@@ -162,6 +164,7 @@ void URecallActorRepresentationProcessor::ConfigureQueries(const TSharedRef<FMas
 {
 	EntityQuery.AddRequirement<FRecallTransformFragment>(EMassFragmentAccess::ReadOnly);
 	EntityQuery.AddRequirement<FRecallActorRepresentationFragment>(EMassFragmentAccess::ReadOnly);
+	EntityQuery.AddTagRequirement<FRecallRenderedTag>(EMassFragmentPresence::All);
 	EntityQuery.AddSubsystemRequirement<URecallActorSubsystem>(EMassFragmentAccess::ReadOnly);
 
 	// This system is used for representation only so it is safe to write.
@@ -245,6 +248,7 @@ void URecallControllerActorRepresentationProcessor::ConfigureQueries(const TShar
 	
 	EntityQuery.AddRequirement<FRecallActorRepresentationFragment>(EMassFragmentAccess::ReadOnly);
 	EntityQuery.AddRequirement<FRecallControllerFragment>(EMassFragmentAccess::ReadOnly);
+	EntityQuery.AddTagRequirement<FRecallRenderedTag>(EMassFragmentPresence::All);
 	EntityQuery.AddSubsystemRequirement<URecallActorSubsystem>(EMassFragmentAccess::ReadOnly);
 }
 
@@ -303,7 +307,8 @@ void URecallActorAnimationRepresentationProcessor::ConfigureQueries(const TShare
 {
 	FMassTagBitSet RequiredTags;
 	RequiredTags.Add(FRecallSkeletalMeshActorRepresentationTag::StaticStruct());
-	
+	RequiredTags.Add(FRecallRenderedTag::StaticStruct());
+
 	FMassTagBitSet InvalidTags;
 	// InvalidTags.Add(FRecallOverrideActorAnimationRepresentationTag::StaticStruct());
 	
