@@ -18,6 +18,7 @@
 #include "Simulation/Controller/RecallControllerFragments.h"
 #include "Simulation/GameplayTag/RecallGameplayTagFragments.h"
 #include "Simulation/Grid/RecallGridCursorFragments.h"
+#include "Simulation/Grid/RecallGridSelectionProcessorGroupTypes.h"
 #include "Simulation/Representation/RecallActorRepresentationFragments.h"
 #include "Simulation/StateTree/RecallStateTreeProcessorGroupTypes.h"
 #include "Simulation/Transform/RecallTransformFragments.h"
@@ -191,6 +192,7 @@ URecallGridCursorOwnerInputProcessor::URecallGridCursorOwnerInputProcessor()
 {
 	ExecutionFlags = static_cast<int32>(EProcessorExecutionFlags::All);
 	ProcessingPhase = EMassProcessingPhase::PrePhysics;
+	ExecutionOrder.ExecuteInGroup = Recall::GridSelection::ProcessorGroupNames::PrePhysics::CursorInput;
 	ExecutionOrder.ExecuteBefore.Add(Recall::StateTree::ProcessorGroupNames::StateTreeUpdate);
 }
 
