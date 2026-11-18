@@ -32,7 +32,7 @@ void URecallAttributeMod::ApplyModInstant(FRecallAttributeSet& AttributeSet) con
 	TMap<FGameplayTag, float> NewValues;
 	NewValues.Reserve(ModOperations.Num());
 	
-	for (const URecallAttributeModOperation* Operation : ModOperations)
+	for (const URecallAttributeModOperationFloat* Operation : ModOperations)
 	{
 		if (IsValid(Operation))
 		{
@@ -43,7 +43,7 @@ void URecallAttributeMod::ApplyModInstant(FRecallAttributeSet& AttributeSet) con
 
 	AttributeSet.RemoveModByHandle(Handle);
 	
-	for (const URecallAttributeModOperation* Operation : ModOperations)
+	for (const URecallAttributeModOperationFloat* Operation : ModOperations)
 	{
 		if (IsValid(Operation))
 		{
@@ -58,15 +58,15 @@ void URecallAttributeMod::ApplyModValue_Internal(const FRecallAttributeSet& Attr
 {
 	checkf(Attribute.IsValid(), TEXT("%hs Invalid attribute is not allowed"), __FUNCTION__);
 	
-	const TArray<URecallAttributeModOperation*> ApplyModOperations = ModOperations.FilterByPredicate(
-		[&Attribute, bIsBaseValue](const URecallAttributeModOperation* Operation)
+	const TArray<URecallAttributeModOperationFloat*> ApplyModOperations = ModOperations.FilterByPredicate(
+		[&Attribute, bIsBaseValue](const URecallAttributeModOperationFloat* Operation)
 	{
 		return IsValid(Operation)
 			&& Operation->IsBaseValueMod() == bIsBaseValue
 			&& Operation->GetTargetAttribute() == Attribute;	
 	});
 	
-	for (const URecallAttributeModOperation* Operation : ApplyModOperations)
+	for (const URecallAttributeModOperationFloat* Operation : ApplyModOperations)
 	{
 		Value = Operation->ApplyModOp(AttributeSet, Value);
 	}

@@ -33,7 +33,7 @@ protected:
 	int32 ModPriority;
 
 	UPROPERTY(Instanced, EditDefaultsOnly, Category="Attribute Mod", DisplayName="Operations")
-	TArray<class URecallAttributeModOperation*> ModOperations;
+	TArray<class URecallAttributeModOperationFloat*> ModOperations;
 
 private:
 	void ApplyModValue_Internal(const FRecallAttributeSet& AttributeSet, const FGameplayTag& Attribute,

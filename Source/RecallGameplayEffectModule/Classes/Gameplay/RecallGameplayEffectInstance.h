@@ -39,6 +39,13 @@ struct RECALLGAMEPLAYEFFECTMODULE_API FRecallGameplayEffectInstance
 	double TimeSeconds = 0.0f;
 
 	/**
+	 * Duration computed when the effect was added (base duration with duration operations applied).
+	 * 0 means that it is infinite.
+	 */
+	UPROPERTY(VisibleAnywhere)
+	float ComputedDuration = 0.0f;
+
+	/**
 	 * Handles to keep track of the attribute modifiers added by this effect instance so they can be removed.
 	 */
 	UPROPERTY(VisibleAnywhere)

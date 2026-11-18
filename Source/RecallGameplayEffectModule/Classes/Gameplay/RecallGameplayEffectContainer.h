@@ -79,6 +79,11 @@ private:
 	 */
 	void HandleEffectStack(const FRecallGameplayEffectContext& Context, const TSubclassOf<URecallGameplayEffect>& Effect);
 
+	/**
+	 * Compute the duration of this effect: base duration with the duration operations applied using the owner's attributes.
+	 */
+	float ComputeDuration(const FRecallGameplayEffectContext& Context, const URecallGameplayEffect& EffectCDO) const;
+
 	FRecallGameplayEffectHandle GetOldestEffectHandle(const TSubclassOf<URecallGameplayEffect>& Effect,
 		const FMassEntityHandle& EffectOwnerEntity, int32& OutEffectOwnedCount) const;
 

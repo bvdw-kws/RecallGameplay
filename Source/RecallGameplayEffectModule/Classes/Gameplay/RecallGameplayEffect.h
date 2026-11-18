@@ -15,6 +15,7 @@
 #include "RecallGameplayEffect.generated.h"
 
 class URecallAttributeMod;
+class URecallModOperationFloat;
 
 /**
  * Gameplay cues associated with a Recall gameplay effect.
@@ -117,7 +118,14 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, Category=Duration, meta=(ClampMin=0.0f, Units=Seconds, EditCondition="DurationPolicy == ERecallGameplayEffectDurationType::HasDuration"))
 	float Duration = 0.0f;
-	
+
+	/**
+	 * Operation applied on Duration when the effect is added, using the owner's attributes.
+	 * A final result of 0 means that the effect is infinite.
+	 */
+	UPROPERTY(EditAnywhere, Instanced, Category=Duration, meta=(EditCondition="DurationPolicy == ERecallGameplayEffectDurationType::HasDuration"))
+	TObjectPtr<URecallModOperationFloat> DurationOperation;
+
 	/**
 	 * Rule that defines how this gameplay effect is ticked.
 	 */

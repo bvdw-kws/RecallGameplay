@@ -10,6 +10,7 @@
 #include "MassEntityView.h"
 #include "RecallGameplayEffect.h"
 #include "RecallGameplayEffectContext.h"
+#include "Mod/RecallModOperationFloat.h"
 #include "Engine/World.h"
 #include "MassEntityManager.h"
 #include "Simulation/Attribute/RecallAttributeFragments.h"
@@ -50,6 +51,7 @@ FRecallGameplayEffectHandle FRecallGameplayEffectContainer::AddEffect(
 		Instance = &EffectInstanceMap.Add(NewHandle);
 		Instance->OwnerEntity = Context.OwnerEntity;
 		Instance->EffectClass = Effect;
+		Instance->ComputedDuration = ComputeDuration(Context, *EffectCDO);
 	}
 
 	AddEffect_Internal(Context, *EffectCDO, Instance);
@@ -478,5 +480,31 @@ bool FRecallGameplayEffectContainer::TickEffect_Internal(float DeltaTime, ERecal
 		return false;
 	}
 	
-	return Instance.TimeSeconds >= EffectCDO->Duration && !FMath::IsNearlyZero(EffectCDO->Duration);
+	return Instance.TimeSeconds >= Instance.ComputedDuration && !FMath::IsNearlyZero(Instance.ComputedDuration);
+}
+
+float FRecallGameplayEffectContainer::ComputeDuration(const FRecallGameplayEffectContext& Context,
+	const URecallGameplayEffect& EffectCDO) const
+{
+	float Duration = EffectCDO.Duration;
+	if (EffectCDO.DurationPolicy != ERecallGameplayEffectDurationType::HasDuration || !IsValid(EffectCDO.DurationOperation))
+	{
+		return Duration;
+	}
+
+	const FMassEntityView OwnerView(Context.EntityManager, OwnerEntity);
+	if (!OwnerView.IsValid())
+	{
+		return Duration;
+	}
+
+	const FRecallAttributeFragment* AttributeFragmentPtr = OwnerView.GetFragmentDataPtr<FRecallAttributeFragment>();
+	if (!AttributeFragmentPtr)
+	{
+		return Duration;
+	}
+
+	Duration = EffectCDO.DurationOperation->ApplyModOp(AttributeFragmentPtr->AttributeSet, Duration);
+
+	return FMath::Max(Duration, 0.0f);
 }
