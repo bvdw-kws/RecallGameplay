@@ -8,7 +8,7 @@
 #include "RecallModOperationFloat.h"
 
 #include "Async/Async.h"
-#include "Attribute/Mod/RecallAttributeModMagnitudeCalculation.h"
+#include "RecallModOperationCalculation.h"
 #include "Settings/RecallSimulationSettings.h"
 
 //----------------------------------------------------------------------//
@@ -51,7 +51,7 @@ float URecallModOperationFloatBase::GetValue(const FRecallAttributeSet& Attribut
 	{
 		// Guard against GC interference
 		FGCScopeGuard GCGuard;
-		auto* Context = NewObject<URecallAttributeModMagnitudeCalculationContext>(GetOuter());
+		auto* Context = NewObject<URecallModOperationCalculationContext>(GetOuter());
 		Context->InitAttributeCalculationContext(AttributeSet, GetContextAttribute());
 
 		// Clear the async flag
@@ -59,7 +59,7 @@ float URecallModOperationFloatBase::GetValue(const FRecallAttributeSet& Attribut
 			Context->ClearInternalFlags(EInternalObjectFlags::Async);
 		});
 
-		const auto* CalculationCDO = CalculationClass->GetDefaultObject<URecallAttributeModMagnitudeCalculation>();
+		const auto* CalculationCDO = CalculationClass->GetDefaultObject<URecallModOperationCalculation>();
 		const URecallSimulationSettings* SimulationSettings = GetDefault<URecallSimulationSettings>();
 		const float DeltaTime = 1.0f / static_cast<float>(SimulationSettings->FramesPerSeconds);
 		return CalculationCDO->CalculateValue(DeltaTime, Context, Value);

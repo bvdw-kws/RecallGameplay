@@ -50,7 +50,7 @@ protected:
 	FVariableCollectionFloat Value = 1.0f;
 
 	UPROPERTY(EditAnywhere, Category="Operation")
-	TSubclassOf<class URecallAttributeModMagnitudeCalculation> CalculationClass;
+	TSubclassOf<class URecallModOperationCalculation> CalculationClass;
 
 private:
 	float GetValue(const FRecallAttributeSet& AttributeSet) const;

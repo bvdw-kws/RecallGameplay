@@ -9,10 +9,10 @@
 #include "CoreMinimal.h"
 #include "Attribute/RecallAttributeSetTypes.h"
 
-#include "RecallAttributeModMagnitudeCalculation.generated.h"
+#include "RecallModOperationCalculation.generated.h"
 
-UCLASS()
-class URecallAttributeModMagnitudeCalculationContext : public UObject
+UCLASS(NotBlueprintable)
+class URecallModOperationCalculationContext : public UObject
 {
 	GENERATED_BODY()
 
@@ -32,11 +32,11 @@ private:
 };
 
 UCLASS(Abstract, Blueprintable)
-class RECALLATTRIBUTEMODULE_API URecallAttributeModMagnitudeCalculation : public UObject
+class RECALLATTRIBUTEMODULE_API URecallModOperationCalculation : public UObject
 {
 	GENERATED_BODY()
 	
 public:
 	UFUNCTION(BlueprintNativeEvent)
-	float CalculateValue(float DeltaTime, const URecallAttributeModMagnitudeCalculationContext* Context, float BaseValue) const;
+	float CalculateValue(float DeltaTime, const URecallModOperationCalculationContext* Context, float BaseValue) const;
 };

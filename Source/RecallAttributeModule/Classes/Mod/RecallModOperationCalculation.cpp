@@ -5,19 +5,19 @@
 // http://www.apache.org/licenses/LICENSE-2.0
 
 
-#include "RecallAttributeModMagnitudeCalculation.h"
+#include "RecallModOperationCalculation.h"
 
 //----------------------------------------------------------------------//
-// URecallAttributeModMagnitudeCalculationContext
+// URecallModOperationCalculationContext
 //----------------------------------------------------------------------//
-void URecallAttributeModMagnitudeCalculationContext::InitAttributeCalculationContext(
+void URecallModOperationCalculationContext::InitAttributeCalculationContext(
 	const FRecallAttributeSet& InAttributeSet, const FGameplayTag& InAttribute)
 {
 	Attribute = InAttribute;
 	AttributeSet = InAttributeSet;
 }
 
-float URecallAttributeModMagnitudeCalculationContext::GetAttributeValue(FGameplayTag InAttribute) const
+float URecallModOperationCalculationContext::GetAttributeValue(FGameplayTag InAttribute) const
 {
 	if (!ensureAlwaysMsgf(Attribute != InAttribute,
 		TEXT("%hs Do not call GetAttributeValue with the same attribute as the base one"), __FUNCTION__))
@@ -29,10 +29,10 @@ float URecallAttributeModMagnitudeCalculationContext::GetAttributeValue(FGamepla
 }
 
 //----------------------------------------------------------------------//
-// URecallAttributeModMagnitudeCalculation
+// URecallModOperationCalculation
 //----------------------------------------------------------------------//
-float URecallAttributeModMagnitudeCalculation::CalculateValue_Implementation(
-	float DeltaTime, const URecallAttributeModMagnitudeCalculationContext* Context, float BaseValue) const
+float URecallModOperationCalculation::CalculateValue_Implementation(
+	float DeltaTime, const URecallModOperationCalculationContext* Context, float BaseValue) const
 {
 	return BaseValue;
 }
