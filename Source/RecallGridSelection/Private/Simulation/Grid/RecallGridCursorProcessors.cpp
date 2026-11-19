@@ -12,7 +12,6 @@
 #include "Desync/RecallDesyncLog.h"
 #include "Entity/RecallGridSelectionSpawnCommand.h"
 #include "Input/RecallGridSelectionInputTypes.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "MassEntityView.h"
 #include "MassExecutionContext.h"
 #include "Simulation/Controller/RecallControllerFragments.h"
@@ -413,7 +412,7 @@ void URecallGridCursorPositionProcessor::Execute(FMassEntityManager& EntityManag
 			FRecallInput Input;
 			if (InputQueueSystem.GetFrameInput(ControllerFragment.ControllerID, Input))
 			{
-				CursorOwnerFragment.CursorPosition = Input.MousePosition;
+				CursorOwnerFragment.CursorWorldPosition = Input.MouseWorldPosition;
 			}
 		}
 	});
@@ -473,35 +472,11 @@ static FVector GetGridCursorPosition(FMassExecutionContext& Context,
 		return GridSelectionPosition;
 	}
 
-	const APlayerController* PlayerController = Context.GetWorld()->GetFirstPlayerController();
-	if (!ensure(PlayerController))
-	{
-		return GridSelectionPosition;
-	}
-	
-	FVector WorldPosition = FVector::ZeroVector, WorldDirection = FVector::ZeroVector;
-	const bool bDeprojected = PlayerController->DeprojectScreenPositionToWorld(
-		CursorOwnerFragment.CursorPosition.X, 
-		CursorOwnerFragment.CursorPosition.Y, 
-		WorldPosition, 
-		WorldDirection
-	);
-		
-	if (bDeprojected)
-	{
-		const FPlane SelectionPlane(GridSelectionPosition, FVector::UpVector);
-		const FVector LineStart = WorldPosition;
-		const FVector LineEnd = WorldPosition + WorldDirection * 1000000.0f;
-
-		float T = 0.0f;
-		FVector Intersection = FVector::ZeroVector;
-		if (UKismetMathLibrary::LinePlaneIntersection(LineStart, LineEnd, SelectionPlane, T, Intersection))
-		{
-			return Intersection;
-		}
-	}
-
-	return GridSelectionPosition;
+	// The world position was projected by the owning player with its own camera,
+	// so it is the same on every peer. Keep the cursor on the plane of the selection.
+	FVector CursorWorldPosition = CursorOwnerFragment.CursorWorldPosition;
+	CursorWorldPosition.Z = GridSelectionPosition.Z;
+	return CursorWorldPosition;
 }
 
 void URecallGridCursorRepresentationProcessor::Execute(FMassEntityManager& EntityManager,

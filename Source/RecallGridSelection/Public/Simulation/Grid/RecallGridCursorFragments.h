@@ -36,8 +36,9 @@ struct RECALLGRIDSELECTION_API FRecallGridCursorOwnerFragment : public FMassFrag
 	UPROPERTY(VisibleAnywhere)
 	bool bUseMousePosition = false;
 	
+	/** Cursor position in world space, as sent by the owning player. Only used while bUseMousePosition is true. */
 	UPROPERTY(VisibleAnywhere)
-	FVector2D CursorPosition = FVector2D::ZeroVector;
+	FVector CursorWorldPosition = FVector::ZeroVector;
 
 	UPROPERTY(VisibleAnywhere)
 	bool bHideCursor = false;
