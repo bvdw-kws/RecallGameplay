@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2024 Van de Walle Bastien
+// Copyright (C) 2024 Van de Walle Bastien
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -7,6 +7,7 @@
 
 #include "RecallGridDeviceTasks.h"
 
+#include "Desync/RecallDesyncLog.h"
 #include "MassEntityView.h"
 #include "MassExecutionContext.h"
 #include "Data/Device/RecallDeviceAsset.h"
@@ -117,6 +118,17 @@ EStateTreeRunStatus FRecallGridSpawnDeviceTask::EnterState(FStateTreeExecutionCo
 		SpawnCommand.GridCellIndex = InstanceData.GridCellIndex;
 		SpawnCommand.GridCellReservationNumber = GridSelectionSystem.ReserveCell(InstanceData.GridCellIndex);
 	}
+
+#if RECALL_DESYNC_LOG
+	{
+		FMassEntityManager& EntityManager = RecallContext.GetMassExecutionContext().GetEntityManagerChecked();
+		const FMassEntityHandle OwnerEntity = RecallContext.GetEntity();
+		int32 AbsoluteIndex = INDEX_NONE, ChunkIndex = INDEX_NONE;
+		EntityManager.GetArchetypeInternalIndexForEntity(OwnerEntity, EntityManager.GetArchetypeForEntity(OwnerEntity), AbsoluteIndex, ChunkIndex);
+		RECALL_DESYNC_LOG_STR(Context.GetWorld(), GridSpawnDevice, FString::Printf(TEXT("Owner: %s (AbsoluteIndex: %d, ChunkIndex: %d), Device: %s, Cell: %d"),
+			*OwnerEntity.DebugGetDescription(), AbsoluteIndex, ChunkIndex, *InstanceData.Device.ToString(), InstanceData.GridCellIndex));
+	}
+#endif // RECALL_DESYNC_LOG
 
 	AsyncSpawnSystem.SpawnEntityAsync(DeviceAsset->EntityConfig, DevicePosition,
 		FQuat::Identity, SpawnParams);

@@ -101,7 +101,7 @@ void URecallMovementProcessor::Execute(FMassEntityManager& EntityManager, FMassE
 
 #if RECALL_DESYNC_LOG
 		const FMassEntityManager& EntityManager = Context.GetEntityManagerChecked();
-		for (int32 EntityIndex = 0; EntityIndex < Context.GetNumEntities(); EntityIndex++)
+		for (int32 EntityIndex = 0; Recall::Desync::IsVerboseEntityLogEnabled() && EntityIndex < Context.GetNumEntities(); EntityIndex++)
 		{
 			const FMassEntityHandle Entity = Context.GetEntity(EntityIndex);
 			const FMassArchetypeHandle ArchetypeHandle = EntityManager.GetArchetypeForEntity(Entity);
